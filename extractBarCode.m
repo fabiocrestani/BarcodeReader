@@ -43,5 +43,6 @@ function extracted = extractBarCode(input, debug)
     area = stats(minIndex).Area;
     
     extracted = imcrop(inputImage, boundingBox);
+    extracted = uint8(mat2gray(extracted)*255);
     
 end

@@ -5,45 +5,49 @@ close all;
 clear all;
 clc;
 
-MIN_AREA = 1000;
-EXPECTED_RATIO = 0.9;
-BOUNDING_BOX_MARGIN = 10;
-
 setFolder = 'set1';
 imageFiles = dir([setFolder '/*.png']);      
 numerOfFiles = length(imageFiles);
 for i = 1 : numerOfFiles
     currentFileName = imageFiles(i).name;
-    images{i} = imread([setFolder '/' currentFileName]);
-
-    inputImage = mat2gray(images{i});           % Entrada
-    image = imboxfilt(inputImage, 7);           % Box filter
-    image = im2bw(image, graythresh(image));    % Limiarização
-    image = imcomplement(image);                % Complemento
-    
-    edges = imfill(imgradient(image));          % Gradiente
-    edges = imboxfilt((255*edges), 3);          % Box filter em uint8
-    edges = im2bw(edges, graythresh(edges));    % Limiarização
-    edges = bwareaopen(edges, MIN_AREA);        % Remove blobs pequenos
-    
-    stats = regionprops(edges);
+    image = imread([setFolder '/' currentFileName]);
    
-    figure; imshow(edges); 
+    % Extrai o código de barras da imagem
+    extracted = extractBarCode(image, false);
+    figure; 
+    imshow(extracted); 
+    xlabel(buildLegendFromFileName(currentFileName));
     
+    extracted = rgbgray(extracted);
+    
+    % Separa os dígitos
     hold on;
-    for i = 1 : numel(stats)
-       boundingBox = stats(i).BoundingBox;
-       rectangle('Position', boundingBox, 'Linewidth', 2, 'EdgeColor', 'y');
-       areas(i) = stats(i).Area;
-       razoes(i) = boundingBox(4)/boundingBox(3);
+    width = 13.7;
+    for j = 1 : 6
+       region = [87+j*width 20 width 100];
+       rectangle('Position', region, 'Linewidth', 1, 'EdgeColor', 'g');
+       groups{j} = imcrop(extracted, region);
+    end
+    hold off;
+    
+    figure; 
+    for j = 1 : 6
+        subplot(2, 3, j); imshow(groups{j});
     end
     
-    razoes = abs(razoes - EXPECTED_RATIO);
-    [~, minIndex] = min(razoes);
-    
-    boundingBox = stats(minIndex).BoundingBox;
-    boundingBox(1:2) = boundingBox(1:2) - BOUNDING_BOX_MARGIN;
-    rectangle('Position', boundingBox, 'Linewidth', 2, 'EdgeColor', 'g');
-    area = stats(minIndex).Area;
+    % TODO Dividir em 7 strips e fazer uma media e ver se ta mais pra 
+    % branco ou pra preto
+    figure;
+    imshow(groups{1});
+    hold on;
+	width = 2.1;
+    for j = 1 : 7
+       region = [(j-1)*width 1 width 100];
+       rectangle('Position', region, 'Linewidth', 1, 'EdgeColor', 'g');
+       digitBar = imcrop(extracted, region);
+       digits(j) = mean(digitBar(:));
+    end
+    hold off;
+    digits
     
 end
