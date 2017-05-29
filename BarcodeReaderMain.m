@@ -5,6 +5,9 @@ close all;
 clear all;
 clc;
 
+% TODO fazer tudo em função da largura da imagem do código de barras
+% extraído
+
 setFolder = 'set1';
 imageFiles = dir([setFolder '/*.png']);      
 numerOfFiles = length(imageFiles);
@@ -43,7 +46,7 @@ for i = 1 : numerOfFiles
     for j = 1 : 7
        region = [1+(j-1)*width 10 width 50];
        rectangle('Position', region, 'Linewidth', 1, 'EdgeColor', 'g');
-       digitBar = imcrop(extracted, region);
+       digitBar = imcrop(groups{1}, region);
        digits(j) = mean(digitBar(:));
        digitBars{j} = digitBar;
        digits(j)
