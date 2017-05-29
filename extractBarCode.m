@@ -24,7 +24,8 @@ function extracted = extractBarCode(input, debug)
     for i = 1 : numel(stats)
         boundingBox = stats(i).BoundingBox;
         if debug
-            rectangle('Position', boundingBox, 'Linewidth', 2, 'EdgeColor', 'y');
+            rectangle('Position', boundingBox, 'Linewidth', 2, ...
+                'EdgeColor', 'y');
         end
         areas(i) = stats(i).Area;
         razoes(i) = boundingBox(4)/boundingBox(3);
@@ -37,7 +38,8 @@ function extracted = extractBarCode(input, debug)
     boundingBox(1:2) = boundingBox(1:2) - BOUNDING_BOX_MARGIN;
     boundingBox(3:4) = boundingBox(3:4) + 2*BOUNDING_BOX_MARGIN;
     if debug
-        rectangle('Position', boundingBox, 'Linewidth', 2, 'EdgeColor', 'g');
+        rectangle('Position', boundingBox, 'Linewidth', 2, ...
+            'EdgeColor', 'g');
         hold off;
     end
     area = stats(minIndex).Area;
