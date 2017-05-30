@@ -1,5 +1,4 @@
 function [primeiroGrupo, segundoGrupo] = splitDigits(extracted, debug)
-
     if debug
         imshow(extracted);
         hold on;

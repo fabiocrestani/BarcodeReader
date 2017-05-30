@@ -1,4 +1,5 @@
 % Leitor de códigos de barras EAN-13
+% https://pt.wikipedia.org/wiki/EAN-13
 % Versão 0.0
 
 close all;
@@ -20,39 +21,14 @@ for i = 1 : numerOfFiles
     xlabel(buildLegendFromFileName(currentFileName)); 
     
     % Separa os dígitos
-    [primeiroGrupo, segundoGrupo] = splitDigits(extracted, true);
+    [primeiroGrupo, segundoGrupo] = splitDigits(extracted, false);
     
-%    segundoGrupoBits = splitDigitBits(segundoGrupo, true);
-    
-    % TODO Dividir em 7 strips e fazer uma media e ver se ta mais pra 
-    % branco ou pra preto
-%     figure;
-%     imshow(groups{1});
-%     hold on;
-% 	width = 1.9;
-%     for j = 1 : 7
-%        region = [1+(j-1)*width 10 width 50];
-%        rectangle('Position', region, 'Linewidth', 1, 'EdgeColor', 'g');
-%        digitBar = imcrop(groups{1}, region);
-%        digits(j) = mean(digitBar(:));
-%        digitBars{j} = digitBar;
-%        digits(j)
-%     end
-%     hold off;
-%     
-%     digits = digits < (255/2);
-%     
-%     figure; 
-%     for j = 1 : 7
-%         subplot(2, 4, j); 
-%         imshow(digitBars{j}); 
-%         if digits(j)
-%             xlabel('1');
-%         else
-%             xlabel('0');
-%         end
-%     end
-%     
-%     digits
+    % Para cada dígito, separa os bits e determina o número correspondente
+    for j = 1 : 6
+        digits = getDigitBits(segundoGrupo{j}, false);
+        number = translateBarCodeCodification(digits);
+        digits
+        number
+    end
 
 end

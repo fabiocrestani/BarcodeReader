@@ -1,0 +1,24 @@
+function [number, rank] = translateBarCodeCodification(digits, code)
+% Traduz os bits do dígito para um número de 0 a 9, de acordo com a
+% especificação do EAN-13: https://pt.wikipedia.org/wiki/EAN-13
+
+    R_CODE = [1 1 1 0 0 1 0; % 0
+              1 1 0 0 1 1 0; % 1
+              1 1 0 1 1 0 0; % 2
+              1 0 0 0 0 1 0; % 3
+              1 0 1 1 1 0 0; % 4
+              1 0 0 1 1 1 0; % 5
+              1 0 1 0 0 0 0; % 6
+              1 0 0 0 1 0 0; % 7
+              1 0 0 1 0 0 0; % 8
+              1 1 1 0 1 0 0; % 9
+              ];
+              
+    if code == 'R' || code == 'r'
+        
+        
+        % TODO faz a diferença do input com todos da lista,
+        
+    end
+
+end
