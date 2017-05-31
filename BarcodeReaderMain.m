@@ -1,6 +1,20 @@
-% Leitor de códigos de barras EAN-13
-% https://pt.wikipedia.org/wiki/EAN-13
-% Versão 0.0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                        %
+% Universidade Tecnológica Federal do Paraná                             %
+% Curitiba, PR                                                           %
+% Engenharia Eletrônica                                                  %
+% Processamento Digital de Imagens                                       %
+%                                                                        %
+% Projeto final da disciplina                                            %
+% Leitor de códigos de barras EAN-13                                     %
+% https://pt.wikipedia.org/wiki/EAN-13                                   %
+%                                                                        %
+% Autor: Fábio Crestani                                                  %
+%                                                                        %
+% Versão 0.1                                                             %
+% 30/05/2017                                                             %
+%                                                                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 close all;
 clear all;
