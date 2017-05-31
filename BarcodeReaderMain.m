@@ -28,15 +28,13 @@ for i = 1 : numerOfFiles
     image = imread([setFolder '/' currentFileName]);
     image = rgb2gray(image);
    
-    % Pega código esperado através do nome do arquivo
-    [inputLegend primeiroGrupoEsperado segundoGrupoEsperado] = ...
+    % Pega o código esperado através do nome do arquivo
+    [inputLegend, primeiroGrupoEsperado, segundoGrupoEsperado, ~] = ...
         buildLegendFromFileName(currentFileName);
     
     % Extrai o código de barras da imagem
     extracted = extractBarCode(image, false);
-    figure; 
-    imshow(extracted);
-    xlabel(inputLegend); 
+    figure; imshow(extracted); xlabel(inputLegend); 
     
     % Separa os dígitos
     [primeiroGrupo, segundoGrupo] = splitDigits(extracted, false);

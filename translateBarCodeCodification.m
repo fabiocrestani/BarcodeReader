@@ -22,18 +22,11 @@ function [number, rank] = translateBarCodeCodification(digits, code)
         error('Código inválido');
     end
         
+    distance = zeros(1, 10);
     for i = 1 : 10
-        %dif(i) = sum(abs(digits - CODE(i, :)))
         distance(i) = sum(abs(digits - CODE(i, :)));
     end
     
     number = find(distance == min(distance), 1, 'first') - 1;
-    
-        % TODO: 
-        % 1. faz a diferença do input com todos da lista,
-        % 2. se a diferença de algum for == 0, tem rank = 1 e retorna
-        % 3. senão, retorna aquele com a menor diferença
-        % 4. neste caso, o rank é o módulo da diferença dividido por 7
-        
-
+    rank = min(distance)/7;
 end
