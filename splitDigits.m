@@ -5,7 +5,7 @@ function [primeiroGrupo, segundoGrupo] = splitDigits(extracted, debug)
     end
 
     [barCodeHeight, barCodeWidth] = size(extracted);
-    digitWidth = barCodeWidth / 13.9;
+    digitWidth = barCodeWidth / 13.8;
     digitHeight = barCodeHeight / 2;
     
     % Primeiro grupo de dígitos (esquerda)

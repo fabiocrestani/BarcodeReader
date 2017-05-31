@@ -1,12 +1,10 @@
 % Leitor de códigos de barras EAN-13
+% https://pt.wikipedia.org/wiki/EAN-13
 % Versão 0.0
 
 close all;
 clear all;
 clc;
-
-% TODO fazer tudo em função da largura da imagem do código de barras
-% extraído
 
 setFolder = 'set1';
 imageFiles = dir([setFolder '/*.png']);      
@@ -19,60 +17,21 @@ for i = 1 : numerOfFiles
     % Extrai o código de barras da imagem
     extracted = extractBarCode(image, false);
     figure; 
-    imshow(extracted); 
-    xlabel(buildLegendFromFileName(currentFileName));
-    [barCodeHeight barCodeWidth] = size(extracted);
+    imshow(extracted);
+    xlabel(buildLegendFromFileName(currentFileName)); 
     
     % Separa os dígitos
-    hold on;
-    digitWidth = barCodeWidth / 13.94;
+    [primeiroGrupo, segundoGrupo] = splitDigits(extracted, false);
+    
+    % Para cada dígito, separa os bits e determina o número correspondente
+    segundoGrupoEncontrado = [];
     for j = 1 : 6
-       region = [(barCodeHeight/2.19) + j*digitWidth 50 digitWidth 50];
-       rectangle('Position', region, 'Linewidth', 1, 'EdgeColor', 'g');
-       segundoGrupo{j} = imcrop(extracted, region);
+        digits = getDigitBits(segundoGrupo{j}, false);
+        number = translateBarCodeCodification(digits, 'r');
+        %digits
+        segundoGrupoEncontrado = [segundoGrupoEncontrado number];
     end
-    hold off;
-    
-    figure; 
-    for j = 1 : 6
-        subplot(2, 3, j); 
-        imshow(segundoGrupo{j}); 
-        title(sprintf('Grupo 2\nDígito %d', j));
-    end
-    
-    
-    % TODO Dividir em 7 strips e fazer uma media e ver se ta mais pra 
-    % branco ou pra preto
-%     figure;
-%     imshow(groups{1});
-%     hold on;
-% 	width = 1.9;
-%     for j = 1 : 7
-%        region = [1+(j-1)*width 10 width 50];
-%        rectangle('Position', region, 'Linewidth', 1, 'EdgeColor', 'g');
-%        digitBar = imcrop(groups{1}, region);
-%        digits(j) = mean(digitBar(:));
-%        digitBars{j} = digitBar;
-%        digits(j)
-%     end
-%     hold off;
-%     
-%     digits = digits < (255/2);
-%     
-%     figure; 
-%     for j = 1 : 7
-%         subplot(2, 4, j); 
-%         imshow(digitBars{j}); 
-%         if digits(j)
-%             xlabel('1');
-%         else
-%             xlabel('0');
-%         end
-%     end
-%     
-%     digits
 
-    % TODO RcodeToDecimal
-    
-
+    disp(['Encontrado: ' segundoGrupoEncontrado]);
+    secondGroup = currentFileName(8:13);
 end
