@@ -33,15 +33,25 @@ for i = 1 : numerOfFiles
         buildLegendFromFileName(currentFileName);
     
     % Extrai o código de barras da imagem
-    extracted = extractBarCode(image, false);
-    figure; imshow(extracted); xlabel(inputLegend); 
-    
+    [firstDigitExtracted, extracted] = extractBarCode(image, false);
+    figure; 
+    subplot(121); imshow(firstDigitExtracted); xlabel('Primeiro dígito');
+    subplot(122); imshow(extracted); xlabel(inputLegend);
+        
     % Separa os dígitos
-    [primeiroGrupo, segundoGrupo] = splitDigits(extracted, false);
+    [codeId, primeiroGrupo, segundoGrupo] = splitDigits(extracted, false);
+    
+    codeId
     
     % Para cada dígito, separa os bits e determina o número correspondente
+    primeiroGrupoEncontrado = '';
     segundoGrupoEncontrado = '';
     for j = 1 : 6
+%         digits = getDigitBits(primeiroGrupo{j}, false);
+%         number = translateBarCodeCodification(digits, 'r');
+%         primeiroGrupoEncontrado = ...
+%             strcat(primeiroGrupoEncontrado, int2str(number));
+        
         digits = getDigitBits(segundoGrupo{j}, false);
         number = translateBarCodeCodification(digits, 'r');
         segundoGrupoEncontrado = ...

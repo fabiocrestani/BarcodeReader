@@ -1,4 +1,6 @@
-function extracted = extractBarCode(input, debug)
+function [firstDigitExtracted, barCodeExtracted] = ...
+    extractBarCode(input, debug)
+% Encontra e extrai um código de barras de uma imagem
 
     MIN_AREA = 1000;
     EXPECTED_RATIO = 0.9;
@@ -44,7 +46,16 @@ function extracted = extractBarCode(input, debug)
     end
     area = stats(minIndex).Area;
     
-    extracted = imcrop(inputImage, boundingBox);
-    extracted = uint8(mat2gray(extracted)*255);
+    barCodeExtracted = imcrop(inputImage, boundingBox);
+    barCodeExtracted = uint8(mat2gray(barCodeExtracted)*255);
+        
+    % Pega também o primeiro dígito, à esquerda do código de barras
+    extraSpaceForFirstDigit = (boundingBox(1) / 13);
+    boundingBox(1) = boundingBox(1) - extraSpaceForFirstDigit + 1;
+    boundingBox(3) = extraSpaceForFirstDigit*0.5 - 1;
+    boundingBox(2) = boundingBox(2) + (boundingBox(2) / 2.95);
+    boundingBox(4) = (boundingBox(4) / 9);
+    firstDigitExtracted = imcrop(inputImage, boundingBox);
+    firstDigitExtracted = uint8(mat2gray(firstDigitExtracted)*255);
     
 end

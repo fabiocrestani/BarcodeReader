@@ -4,19 +4,21 @@ function [codeId, primeiroGrupo, segundoGrupo] = ...
         imshow(extracted);
         hold on;
     end
-
+    
     [barCodeHeight, barCodeWidth] = size(extracted);
+    
+    firstDigitWidth = barCodeWidth/13;
+    firstDigitHeight = barCodeWidth/3;
+    firstDigitRegion = [0 10 
+    firstDigit = imcrop(extracted, firstDigitRegion);
+
+    
     digitWidth = barCodeWidth / 13.8;
     digitHeight = barCodeHeight / 2;
-    
-    % TODO
-    codeId = 0;
-    
     
     % Primeiro grupo de dígitos (esquerda)
     % TODO
     primeiroGrupo = 0;
-
     
 
     % Segundo grupo de dígitos (direita)
