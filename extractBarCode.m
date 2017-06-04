@@ -7,12 +7,12 @@ function [firstDigitExtracted, barCodeExtracted] = ...
     BOUNDING_BOX_MARGIN = -1;
 
     inputImage = mat2gray(input);               % Entrada
-    image = imboxfilt(input, 7);                % Box filter
+    image = imboxfilt(input, 5);                % Box filter
     image = im2bw(image, graythresh(image));    % Limiarização
     image = imcomplement(image);                % Complemento
 
     edges = imfill(imgradient(image));          % Gradiente
-    edges = imboxfilt((255*edges), 3);          % Box filter em uint8
+    edges = imboxfilt((255*edges), 5);          % Box filter em uint8
     edges = im2bw(edges, graythresh(edges));    % Limiarização
     edges = bwareaopen(edges, MIN_AREA);        % Remove blobs pequenos
 
@@ -36,6 +36,7 @@ function [firstDigitExtracted, barCodeExtracted] = ...
     razoes = abs(razoes - EXPECTED_RATIO);
     [~, minIndex] = min(razoes);
 
+    % Extrai o código de barras da imagem
     boundingBox = stats(minIndex).BoundingBox;
     boundingBox(1:2) = boundingBox(1:2) - BOUNDING_BOX_MARGIN;
     boundingBox(3:4) = boundingBox(3:4) + 2*BOUNDING_BOX_MARGIN;
@@ -50,7 +51,7 @@ function [firstDigitExtracted, barCodeExtracted] = ...
     barCodeExtracted = uint8(mat2gray(barCodeExtracted)*255);
         
     % Pega também o primeiro dígito, à esquerda do código de barras
-    extraSpaceForFirstDigit = (boundingBox(1) / 13);
+    extraSpaceForFirstDigit = (boundingBox(1) / 13)
     boundingBox(1) = boundingBox(1) - extraSpaceForFirstDigit + 1;
     boundingBox(3) = extraSpaceForFirstDigit*0.5 - 1;
     boundingBox(2) = boundingBox(2) + (boundingBox(2) / 2.95);

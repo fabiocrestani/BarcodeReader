@@ -23,10 +23,13 @@ clc;
 setFolder = 'set1';
 imageFiles = dir([setFolder '/*.png']);      
 numerOfFiles = length(imageFiles);
+numerOfFiles = 1;
 for i = 1 : numerOfFiles
     currentFileName = imageFiles(i).name;
+    disp(currentFileName);
     image = imread([setFolder '/' currentFileName]);
-    image = rgb2gray(image);
+    image = mat2gray(image);
+    imshow(image);
    
     % Pega o código esperado através do nome do arquivo
     [inputLegend, primeiroGrupoEsperado, segundoGrupoEsperado, ~] = ...
