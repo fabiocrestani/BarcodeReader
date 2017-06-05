@@ -12,8 +12,6 @@ function [extractedBarCode1, boundingBox] = ...
     Gdir = abs(Gdir);
     
     % Calcula e aplica máscara
-    GdirX = Gdir;
-    GdirY = Gdir;
     mascaraNegadaX = ~(Gdir > 150);
     mascaraNegadaY = ~(Gdir < 20);
     Gdir(mascaraNegadaX & mascaraNegadaY) = 0;
@@ -46,7 +44,10 @@ function [extractedBarCode1, boundingBox] = ...
     if debug
         figure; imshow(Gbox); title('Blobs'); hold on;
     end
-    for j = 1 : numel(stats)
+    numElements = numel(stats);
+    areas = zeros(1, numElements);
+    razoes = areas;
+    for j = 1 : numElements;
         boundingBox = stats(j).BoundingBox;
         if debug
             rectangle('Position', boundingBox, 'Linewidth', 2, ...
@@ -55,12 +56,10 @@ function [extractedBarCode1, boundingBox] = ...
 
         area = stats(j).Area;
         razao = boundingBox(4)/boundingBox(3);
-        if area < MIN_AREA
-            area = 0;
-            razao = 0;
+        if area > MIN_AREA
+            areas(j) = area;
+            razoes(j) = razao;
         end
-        areas(j) = area;
-        razoes(j) = razao;    
     end
     
     % Pega razão mais próxima do esperado

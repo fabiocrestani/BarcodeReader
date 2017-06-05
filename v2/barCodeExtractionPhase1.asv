@@ -1,4 +1,6 @@
-function [extractedBarCode1] = barCodeExtractionPhase1(image, debug)
+function [extractedBarCode1, boundingBox] = ...
+                                barCodeExtractionPhase1(image, debug)
+% Extrai o código de barras de uma imagem maior
 
     MIN_AREA = 1000;
     EXPECTED_RATIO = 0.9;
@@ -10,8 +12,6 @@ function [extractedBarCode1] = barCodeExtractionPhase1(image, debug)
     Gdir = abs(Gdir);
     
     % Calcula e aplica máscara
-    GdirX = Gdir;
-    GdirY = Gdir;
     mascaraNegadaX = ~(Gdir > 150);
     mascaraNegadaY = ~(Gdir < 20);
     Gdir(mascaraNegadaX & mascaraNegadaY) = 0;
@@ -44,7 +44,10 @@ function [extractedBarCode1] = barCodeExtractionPhase1(image, debug)
     if debug
         figure; imshow(Gbox); title('Blobs'); hold on;
     end
-    for j = 1 : numel(stats)
+    numElements = numel(stats);
+    areas = zeros(1, numElements);
+    razoes = areas;
+    for j = 1 : numElements;
         boundingBox = stats(j).BoundingBox;
         if debug
             rectangle('Position', boundingBox, 'Linewidth', 2, ...
@@ -53,12 +56,9 @@ function [extractedBarCode1] = barCodeExtractionPhase1(image, debug)
 
         area = stats(j).Area;
         razao = boundingBox(4)/boundingBox(3);
-        if area < MIN_AREA
-            area = 0;
-            razao = 0;
-        end
-        areas(j) = area;
-        razoes(j) = razao;    
+        if area > MIN_AREA
+            areas(j) = area;
+            razoes(j) = razao;    
     end
     
     % Pega razão mais próxima do esperado
@@ -72,11 +72,13 @@ function [extractedBarCode1] = barCodeExtractionPhase1(image, debug)
             'EdgeColor', 'g');
         hold off;
     end
-    area = stats(minIndex).Area;    
+    %area = stats(minIndex).Area;    
     extractedBarCode1 = imcrop(image, boundingBox);
     extractedBarCode1 = uint8(mat2gray(extractedBarCode1)*255);
 
     % Resultado
-    figure; imshow(extractedBarCode1); title('Código de barras extraído');
-
+    if debug
+        figure; imshow(extractedBarCode1); 
+        title('Código de barras extraído');
+    end
 end
