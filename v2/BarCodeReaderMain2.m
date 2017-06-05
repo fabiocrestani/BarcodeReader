@@ -14,7 +14,7 @@
 % GitHub: https://github.com/fabiocrestani                               %
 %                                                                        %
 % Versão 0.2.0                                                           %
-% 04/06/2017                                                             %
+% 05/06/2017                                                             %
 %                                                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -25,13 +25,19 @@ miniOCR = load('../miniOCR/miniOCR.mat');
 miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
-setFolder = '../set0';
+setFolder = '../set1';
 imageFiles = dir([setFolder '/*.png']);      
 numerOfFiles = length(imageFiles);
-%numerOfFiles = 10;
+numerOfFiles = 1;
 for i = 1 : numerOfFiles
     currentFileName = imageFiles(i).name;
     image = imread([setFolder '/' currentFileName]);
+    
+    % Redimensiona, se for muito grande
+    [m, n] = size(image);
+    if m*n > (230*174*10)
+        image = imresize(image, 230*174*50 / (m*n));
+    end
     
     % Trata caso onde imagem de entrada é colorida
     [~, ~, channelNumber] = size(image);
@@ -55,16 +61,21 @@ for i = 1 : numerOfFiles
     % Identifica primeiro dígito
     firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR);
     
-
+    % Determina primeiro e segundo grupo do código de barras
+    [barWidths, firstGroup, secondGroup] = ...
+        splitGroups(extractedBarCode2, false);
     
     
-    
-
     % Resultados
-    figure; imshow(extractedBarCode1); title('1a fase da extração');
-    figure; imshow(extractedBarCode2); title('2a fase da extração');
-    figure; imshow(firstDigitExtracted); title('3a fase da extração');
-    xlabel(firstDigit);
+    %figure; imshow(extractedBarCode1); title('1a fase da extração');
+    %figure; imshow(extractedBarCode2); title('2a fase da extração');
+    %figure; imshow(firstDigitExtracted); title('3a fase da extração'); xlabel(firstDigit);
+       
+    figure;
+    subplot(311); stem(barWidths); title('barWidths'); grid;
+    subplot(312); stem(firstGroup); title('firstGroup'); grid;
+    subplot(313); stem(secondGroup); title('secondGroup'); grid;
     
+    % TODO percorre segundo grupo e pega bits
     
 end
