@@ -20,10 +20,10 @@
 
 close all; clear all; clc;
 
-setFolder = '../set0';
+setFolder = '../set1';
 imageFiles = dir([setFolder '/*.png']);      
 numerOfFiles = length(imageFiles);
-numerOfFiles = 1;
+%numerOfFiles = 1;
 for i = 1 : numerOfFiles
     currentFileName = imageFiles(i).name;
     image = imread([setFolder '/' currentFileName]);
@@ -44,11 +44,13 @@ for i = 1 : numerOfFiles
         extractedBarCode1, boundingBox1, false);
    
     % Terceira fase de extração - extrai primeiro dígito
-    % TODO
-    
+    [firstDigitExtracted, boundingBox3] = barCodeExtractionPhase3(...
+        image, extractedBarCode2, boundingBox2, false);
+      
     
     figure; imshow(extractedBarCode1); title('1a fase da extração');
     figure; imshow(extractedBarCode2); title('2a fase da extração');
+    figure; imshow(firstDigitExtracted); title('3a fase da extração');
     
     
 end
