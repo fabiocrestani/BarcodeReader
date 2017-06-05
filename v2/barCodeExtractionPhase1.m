@@ -1,4 +1,6 @@
-function [extractedBarCode1] = barCodeExtractionPhase1(image, debug)
+function [extractedBarCode1, boundingBox] = ...
+                                barCodeExtractionPhase1(image, debug)
+% Extrai o código de barras de uma imagem maior
 
     MIN_AREA = 1000;
     EXPECTED_RATIO = 0.9;

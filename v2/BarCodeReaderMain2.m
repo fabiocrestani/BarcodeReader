@@ -10,15 +10,15 @@
 % https://pt.wikipedia.org/wiki/EAN-13                                   %
 %                                                                        %
 % Autor: Fábio Crestani                                                  %
+% Email: crestani.fabio@gmail.com                                        %
+% GitHub: https://github.com/fabiocrestani                               %
 %                                                                        %
 % Versão 0.2.0                                                           %
-% 30/05/2017                                                             %
+% 04/06/2017                                                             %
 %                                                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-close all;
-clear all;
-clc;
+close all; clear all; clc;
 
 setFolder = '../set0';
 imageFiles = dir([setFolder '/*.png']);      
@@ -27,18 +27,28 @@ numerOfFiles = 1;
 for i = 1 : numerOfFiles
     currentFileName = imageFiles(i).name;
     image = imread([setFolder '/' currentFileName]);
+    
+    % Trata caso onde imagem de entrada é colorida
     [~, ~, channelNumber] = size(image);
     if channelNumber == 3
         image = rgb2gray(image);
     end
     image = mat2gray(image);
     
-    % Primeira fase de extração
-    extractedBarCode1 = barCodeExtractionPhase1(image, false);
+    % Primeira fase de extração - extração grosseira do código de barras
+    [extractedBarCode1, boundingBox1] = ...
+        barCodeExtractionPhase1(image, false);
     
-    % Segunda fase de extração
+    % Segunda fase de extração - refina extração do código de barras
+    [extractedBarCode2, boundingBox2] = barCodeExtractionPhase2(image, ...
+        extractedBarCode1, boundingBox1, false);
+   
+    % Terceira fase de extração - extrai primeiro dígito
+    % TODO
     
-    % TODO recortar quando encontrar a primeira coluna de 1s, da esquerda
-    % para a direita
+    
+    figure; imshow(extractedBarCode1); title('1a fase da extração');
+    figure; imshow(extractedBarCode2); title('2a fase da extração');
+    
     
 end
