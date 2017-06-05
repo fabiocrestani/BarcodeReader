@@ -20,10 +20,15 @@
 
 close all; clear all; clc;
 
-setFolder = '../set1';
+% Carrega miniOCR
+miniOCR = load('../miniOCR/miniOCR.mat');
+miniOCR = miniOCR.miniOCR;
+
+% Carrega imagens
+setFolder = '../set0';
 imageFiles = dir([setFolder '/*.png']);      
 numerOfFiles = length(imageFiles);
-%numerOfFiles = 1;
+%numerOfFiles = 10;
 for i = 1 : numerOfFiles
     currentFileName = imageFiles(i).name;
     image = imread([setFolder '/' currentFileName]);
@@ -46,11 +51,20 @@ for i = 1 : numerOfFiles
     % Terceira fase de extração - extrai primeiro dígito
     [firstDigitExtracted, boundingBox3] = barCodeExtractionPhase3(...
         image, extractedBarCode2, boundingBox2, false);
-      
     
+    % Identifica primeiro dígito
+    firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR);
+    
+
+    
+    
+    
+
+    % Resultados
     figure; imshow(extractedBarCode1); title('1a fase da extração');
     figure; imshow(extractedBarCode2); title('2a fase da extração');
     figure; imshow(firstDigitExtracted); title('3a fase da extração');
+    xlabel(firstDigit);
     
     
 end
