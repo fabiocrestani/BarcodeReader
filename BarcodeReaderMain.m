@@ -11,7 +11,7 @@
 %                                                                        %
 % Autor: Fábio Crestani                                                  %
 %                                                                        %
-% Versão 0.1                                                             %
+% Versão 0.1.0                                                           %
 % 30/05/2017                                                             %
 %                                                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,7 +36,8 @@ for i = 1 : numerOfFiles
         buildLegendFromFileName(currentFileName);
     
     % Extrai o código de barras da imagem
-    [firstDigitExtracted, extracted] = extractBarCode(image, false);
+    %[firstDigitExtracted, extracted] = extractBarCode(image, false);
+    [firstDigitExtracted, extracted] = extractBarCodeLevel2(image, true);
     figure; 
     subplot(121); imshow(firstDigitExtracted); xlabel('Primeiro dígito');
     subplot(122); imshow(extracted); xlabel(inputLegend);
