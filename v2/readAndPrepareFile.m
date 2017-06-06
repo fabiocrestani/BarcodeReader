@@ -20,6 +20,6 @@ function [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
     
     % Obtém resultado esperado a partir do nome do arquivo
     firstDigitExptd = currentFileName(1);
-    firstGroupExptd = currentFileName(2:8);
-    secondGroupExptd = currentFileName(9:15);
+    firstGroupExptd = currentFileName(2:7);
+    secondGroupExptd = currentFileName(8:13);
 end

@@ -27,9 +27,14 @@ miniOCR = miniOCR.miniOCR;
 % Carrega imagens
 setFolder = '../set1';
 imageFiles = dir([setFolder '/*.png']);      
-numerOfFiles = length(imageFiles);
-numerOfFiles = 1;
-for i = 1 : numerOfFiles
+numberOfFiles = length(imageFiles);
+%numerOfFiles = 1;
+
+% Para comparação
+acertos = 0;
+erros = 0;
+
+for i = 1 : numberOfFiles
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
         readAndPrepareFile(imageFiles(i), setFolder);
@@ -62,7 +67,6 @@ for i = 1 : numerOfFiles
         firstDigit);
     [secondGroup, secondGroupString] = decodeGroup(secondGroupDigits);
     
-    
     % Resultados
     debug = false;
     if debug
@@ -76,7 +80,22 @@ for i = 1 : numerOfFiles
         subplot(313); stem(secondGroup); title('secondGroup'); grid;
     end
     
-    fprintf('Primeiro dígito: %d\n', firstDigit);
-    fprintf('Primeiro grupo: %s\n', firstGroupString);
-    fprintf('Segundo grupo: %s\n', secondGroupString);
+    fprintf('Esperado:  %s-%s-%s\n', firstDigitExptd, firstGroupExptd, ...
+        secondGroupExptd);
+    fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
+        firstGroupString, secondGroupString);
+    if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
+        strcmp(secondGroupExptd, secondGroupString)
+        fprintf('Resultado: OK\n\n');
+        acertos = acertos + 1;
+    else
+        fprintf('Resultado: Não OK\n\n');
+        erros = erros + 1;
+    end
 end
+
+acertos = 100 * acertos / numberOfFiles;
+erros = 100 * erros / numberOfFiles;
+fprintf('Acertos:   %.1f%% \nErros:     %.1f%%\n\n', acertos, erros);
+
+
