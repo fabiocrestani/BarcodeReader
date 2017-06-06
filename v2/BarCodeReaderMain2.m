@@ -30,21 +30,9 @@ imageFiles = dir([setFolder '/*.png']);
 numerOfFiles = length(imageFiles);
 numerOfFiles = 1;
 for i = 1 : numerOfFiles
-    currentFileName = imageFiles(i).name;
-    image = imread([setFolder '/' currentFileName]);
-    
-    % Redimensiona, se for muito grande
-    [m, n] = size(image);
-    if m*n > (230*174*10)
-        image = imresize(image, 230*174*50 / (m*n));
-    end
-    
-    % Trata caso onde imagem de entrada é colorida
-    [~, ~, channelNumber] = size(image);
-    if channelNumber == 3
-        image = rgb2gray(image);
-    end
-    image = mat2gray(image);
+    % Lê arquivo e pré-processa
+    [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
+        readAndPrepareFile(imageFiles(i), setFolder);
     
     % Primeira fase de extração - extração grosseira do código de barras
     [extractedBarCode1, boundingBox1] = ...
