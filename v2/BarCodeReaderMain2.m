@@ -65,17 +65,30 @@ for i = 1 : numerOfFiles
     [barWidths, firstGroup, secondGroup] = ...
         splitGroups(extractedBarCode2, false);
     
+    % Divide cada grupo em 6 dígitos
+    firstGroupDigits = splitGroupDigits(firstGroup);
+    secondGroupDigits = splitGroupDigits(secondGroup);
+    
+    % Decodifica grupo
+    [firstGroup, firstGroupString] = decodeGroup(firstGroupDigits, ...
+        firstDigit);
+    [secondGroup, secondGroupString] = decodeGroup(secondGroupDigits);
+    
     
     % Resultados
-    %figure; imshow(extractedBarCode1); title('1a fase da extração');
-    %figure; imshow(extractedBarCode2); title('2a fase da extração');
-    %figure; imshow(firstDigitExtracted); title('3a fase da extração'); xlabel(firstDigit);
-       
-    figure;
-    subplot(311); stem(barWidths); title('barWidths'); grid;
-    subplot(312); stem(firstGroup); title('firstGroup'); grid;
-    subplot(313); stem(secondGroup); title('secondGroup'); grid;
+    debug = false;
+    if debug
+        figure; imshow(extractedBarCode1); title('1a fase da extração');
+        figure; imshow(extractedBarCode2); title('2a fase da extração');
+        figure; imshow(firstDigitExtracted); title('3a fase da extração'); 
+        xlabel(firstDigit);
+        figure;
+        subplot(311); stem(barWidths); title('barWidths'); grid;
+        subplot(312); stem(firstGroup); title('firstGroup'); grid;
+        subplot(313); stem(secondGroup); title('secondGroup'); grid;
+    end
     
-    % TODO percorre segundo grupo e pega bits
-    
+    fprintf('Primeiro dígito: %d\n', firstDigit);
+    fprintf('Primeiro grupo: %s\n', firstGroupString);
+    fprintf('Segundo grupo: %s\n', secondGroupString);
 end

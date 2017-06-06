@@ -60,6 +60,12 @@ function [barWidths, firstGroup, secondGroup] = ...
     bars = bars*255;
     barsPlot = repmat(bars, [100 1]);
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % TODO
+    % Isso aqui não ficou robusto o suficiente
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    barWidths = round(barWidths * (3/5));
+    
     if debug
         figure;
         subplot(311); imshow(barsPlot); title('bars'); 
@@ -79,7 +85,7 @@ function [barWidths, firstGroup, secondGroup] = ...
     end
     
     % Separa os grupos
-    firstGroup = barWidths(5:27);
+    firstGroup = barWidths(5:28);
     secondGroup = barWidths(33:56);
 
 end
