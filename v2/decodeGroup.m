@@ -1,14 +1,25 @@
 function [groupNumber, groupString] = ... 
-    decodeGroup(secondGroupDigits, firstDigit)
+    decodeGroup(groupDigits, firstDigit)
 % Aplica decodeDigits para cada dígito do grupo e monta número
 
     switch nargin
         case 1
-            code = 'r';
+            code = 'RRRRRR';
         case 2
-            % TODO determinar código baseado no primeiro dígito 
-            % code = code;
-            code = 'r';
+            switch firstDigit
+                case 0, code = 'LLLLLL';
+                case 1, code = 'LLGLGG';
+                case 2, code = 'LLGGLG';
+                case 3, code = 'LLGGGL';
+                case 4, code = 'LGLLGG';
+                case 5, code = 'LGGLLG';
+                case 6, code = 'LGGGLL';
+                case 7, code = 'LGLGLG';
+                case 8, code = 'LGLGGL';                                
+                case 9, code = 'LGGLGL';
+                otherwise
+                    error('Erro em decodeGroup: firstDigit inválido');
+            end
         otherwise
             error('Erro em decodeGroup: Número de argumentos inválido');
     end
@@ -19,7 +30,7 @@ function [groupNumber, groupString] = ...
     groupString = [];
     
     for k = 1 : NUMBER_OF_DIGITS
-        groupNumber(k) = decodeDigits(secondGroupDigits(k, :), code);
+        groupNumber(k) = decodeDigits(groupDigits(k, :), code(k));
         groupString = strcat(groupString, int2str(groupNumber(k)));
     end
 end

@@ -28,7 +28,7 @@ miniOCR = miniOCR.miniOCR;
 setFolder = '../set1';
 imageFiles = dir([setFolder '/*.png']);      
 numberOfFiles = length(imageFiles);
-%numerOfFiles = 1;
+%numberOfFiles = 1;
 
 % Para comparação
 acertos = 0;
@@ -97,5 +97,3 @@ end
 acertos = 100 * acertos / numberOfFiles;
 erros = 100 * erros / numberOfFiles;
 fprintf('Acertos:   %.1f%% \nErros:     %.1f%%\n\n', acertos, erros);
-
-
