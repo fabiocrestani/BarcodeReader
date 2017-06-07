@@ -85,7 +85,7 @@ function [barWidths, firstGroup, secondGroup] = ...
     end
     
     % Separa os grupos
-    firstGroup = barWidths(5:28);
+    firstGroup = barWidths(4:27);
     secondGroup = barWidths(33:56);
 
 end
