@@ -63,9 +63,10 @@ for i = 1 : numberOfFiles
     secondGroupDigits = splitGroupDigits(secondGroup);
     
     % Decodifica grupo
-    [firstGroup, firstGroupString] = decodeGroup(firstGroupDigits, ...
-        firstDigit);
-    [secondGroup, secondGroupString] = decodeGroup(secondGroupDigits);
+    [firstGroupInteger, firstGroupString] = decodeGroup(...
+        firstGroupDigits, firstDigit);
+    [secondGroupInteger, secondGroupString] = decodeGroup(...
+        secondGroupDigits);
     
     % Resultados
     debug = false;
@@ -85,7 +86,9 @@ for i = 1 : numberOfFiles
     fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
         firstGroupString, secondGroupString);
     if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
+        strcmp(firstGroupExptd, firstGroupString) && ...
         strcmp(secondGroupExptd, secondGroupString)
+        
         fprintf('Resultado: OK\n\n');
         acertos = acertos + 1;
     else

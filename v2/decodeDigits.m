@@ -1,19 +1,7 @@
 function [number, rank] = decodeDigits(digits, code)
 % Traduz os bits do dígito para um número de 0 a 9, de acordo com a
 % especificação do EAN-13: https://pt.wikipedia.org/wiki/EAN-13
-
-    L_CODE = [0 0 0 1 1 0 1; % 0
-              0 0 1 1 0 0 1; % 1
-              0 0 1 0 0 1 1; % 2
-              0 1 1 1 1 0 1; % 3
-              0 1 0 0 0 1 1; % 4
-              0 1 1 0 0 0 1; % 5
-              0 1 0 1 1 1 1; % 6
-              0 1 1 1 0 1 1; % 7
-              0 1 1 0 1 1 1; % 8
-              0 0 0 1 0 1 1; % 9
-              ];
-          
+         
     G_CODE = [0 1 0 0 1 1 1; % 0
               0 1 1 0 0 1 1; % 1
               0 0 1 1 0 1 1; % 2
@@ -37,6 +25,8 @@ function [number, rank] = decodeDigits(digits, code)
               1 0 0 1 0 0 0; % 8
               1 1 1 0 1 0 0; % 9
               ];
+          
+    L_CODE = ~R_CODE;
               
     switch code 
         case 'R', CODE = R_CODE;
@@ -51,7 +41,7 @@ function [number, rank] = decodeDigits(digits, code)
     NUMBER_OF_CODES = 10;
     digits = ~digits;
     distance = zeros(1, NUMBER_OF_CODES);
-    for i = 1 : NUMBER_OF_CODES
+    for i = 1 : NUMBER_OF_CODES 
         distance(i) = sum(abs(digits - CODE(i, :)));
     end
     
