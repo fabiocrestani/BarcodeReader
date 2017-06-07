@@ -13,8 +13,8 @@
 % Email: crestani.fabio@gmail.com                                        %
 % GitHub: https://github.com/fabiocrestani                               %
 %                                                                        %
-% Versão 0.2.0                                                           %
-% 05/06/2017                                                             %
+% Versão 0.2.1                                                           %
+% 07/06/2017                                                             %
 %                                                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
