@@ -25,7 +25,7 @@ miniOCR = load('../miniOCR/miniOCR.mat');
 miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
-setFolder = '../set1';
+setFolder = '../imageSets/set3-cropped-random';
 imageFiles = dir([setFolder '/*.png']);      
 numberOfFiles = length(imageFiles);
 %numberOfFiles = 1;
