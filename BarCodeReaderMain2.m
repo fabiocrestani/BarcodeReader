@@ -25,8 +25,8 @@ miniOCR = load('../miniOCR/miniOCR.mat');
 miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
-%setFolder = '../imageSets/set3-cropped-random';
-setFolder = '../imageSets/set2-fotos';
+setFolder = '../imageSets/set3-cropped-random';
+%setFolder = '../imageSets/set2-fotos';
 imageFiles = dir([setFolder '/*.png']);
 if length(imageFiles) < 1
     error('Nenhum arquivo encontrado');
@@ -35,7 +35,6 @@ numberOfFiles = length(imageFiles);
 %numberOfFiles = 1;
 
 % Para comparação
-
 acertos = 0;
 erros = 0;
 
@@ -46,63 +45,63 @@ for i = 1 : numberOfFiles
     
     % Primeira fase de extração - extração grosseira do código de barras
     [extractedBarCode1, boundingBox1] = ...
-        barCodeExtractionPhase1(image, true);
+        barCodeExtractionPhase1(image, false);
     
     % Segunda fase de extração - refina extração do código de barras
     [extractedBarCode2, boundingBox2] = barCodeExtractionPhase2(image, ...
-        extractedBarCode1, boundingBox1, true);
+        extractedBarCode1, boundingBox1, false);
     
     % Redimensiona
     extractedBarCode2 = imresize(extractedBarCode2, [171 191]);
    
     % Terceira fase de extração - extrai primeiro dígito
-%     [firstDigitExtracted, boundingBox3] = barCodeExtractionPhase3(...
-%         image, extractedBarCode2, boundingBox2, false);
-%     
-%     % Identifica primeiro dígito
-%     firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR);
-%     
-%     % Determina primeiro e segundo grupo do código de barras
-%     [barWidths, firstGroup, secondGroup] = ...
-%         splitGroups(extractedBarCode2, false);
-%     
-%     % Divide cada grupo em 6 dígitos
-%     firstGroupDigits = splitGroupDigits(firstGroup);
-%     secondGroupDigits = splitGroupDigits(secondGroup);
-%     
-%     % Decodifica grupo
-%     [firstGroupInteger, firstGroupString] = decodeGroup(...
-%         firstGroupDigits, firstDigit);
-%     [secondGroupInteger, secondGroupString] = decodeGroup(...
-%         secondGroupDigits);
-%     
-%     % Resultados
-%     debug = false;
-%     if debug
-%         figure; imshow(extractedBarCode1); title('1a fase da extração');
-%         figure; imshow(extractedBarCode2); title('2a fase da extração');
-%         figure; imshow(firstDigitExtracted); title('3a fase da extração'); 
-%         xlabel(firstDigit);
-%         figure;
-%         subplot(311); stem(barWidths); title('barWidths'); grid;
-%         subplot(312); stem(firstGroup); title('firstGroup'); grid;
-%         subplot(313); stem(secondGroup); title('secondGroup'); grid;
-%     end
-%     
-%     fprintf('Esperado:  %s-%s-%s\n', firstDigitExptd, firstGroupExptd, ...
-%         secondGroupExptd);
-%     fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
-%         firstGroupString, secondGroupString);
-% 
-%     if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
-%         strcmp(firstGroupExptd, firstGroupString) && ...
-%         strcmp(secondGroupExptd, secondGroupString)        
-%         fprintf('Resultado: OK\n\n');
-%         acertos = acertos + 1;
-%     else
-%         fprintf('Resultado: Não OK\n\n');
-%         erros = erros + 1;
-%     end
+    [firstDigitExtracted, boundingBox3] = barCodeExtractionPhase3(...
+        image, extractedBarCode2, boundingBox2, false);
+    
+    % Identifica primeiro dígito
+    firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR);
+    
+    % Determina primeiro e segundo grupo do código de barras
+    [barWidths, firstGroup, secondGroup] = ...
+        splitGroups(extractedBarCode2, false);
+    
+    % Divide cada grupo em 6 dígitos
+    firstGroupDigits = splitGroupDigits(firstGroup);
+    secondGroupDigits = splitGroupDigits(secondGroup);
+    
+    % Decodifica grupo
+    [firstGroupInteger, firstGroupString] = decodeGroup(...
+        firstGroupDigits, firstDigit);
+    [secondGroupInteger, secondGroupString] = decodeGroup(...
+        secondGroupDigits);
+    
+    % Resultados
+    debug = false;
+    if debug
+        figure; imshow(extractedBarCode1); title('1a fase da extração');
+        figure; imshow(extractedBarCode2); title('2a fase da extração');
+        figure; imshow(firstDigitExtracted); title('3a fase da extração'); 
+        xlabel(firstDigit);
+        figure;
+        subplot(311); stem(barWidths); title('barWidths'); grid;
+        subplot(312); stem(firstGroup); title('firstGroup'); grid;
+        subplot(313); stem(secondGroup); title('secondGroup'); grid;
+    end
+    
+    fprintf('Esperado:  %s-%s-%s\n', firstDigitExptd, firstGroupExptd, ...
+        secondGroupExptd);
+    fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
+        firstGroupString, secondGroupString);
+
+    if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
+        strcmp(firstGroupExptd, firstGroupString) && ...
+        strcmp(secondGroupExptd, secondGroupString)        
+        fprintf('Resultado: OK\n\n');
+        acertos = acertos + 1;
+    else
+        fprintf('Resultado: Não OK\n\n');
+        erros = erros + 1;
+    end
 end
 
 acertos = 100 * acertos / numberOfFiles;
