@@ -3,9 +3,15 @@ function [extractedBarCode1, boundingBox] = ...
 % Extrai o código de barras de uma imagem maior
 
     MIN_AREA = 1000;
-    EXPECTED_RATIO = 0.9;
+    EXPECTED_RATIO = 0.65;
     BOUNDING_BOX_MARGIN = -1;
+    BOX_FILTER_SIZE = 15;
 
+    [m, n] = size(image);
+    if m*n > 790*960*2
+        BOX_FILTER_SIZE = 35
+    end
+    
     % Calcula gradientes, módulo e ângulo
     [Gx, Gy] = imgradientxy(image);
     [Gmag, Gdir] = imgradient(Gx, Gy);
@@ -26,14 +32,14 @@ function [extractedBarCode1, boundingBox] = ...
     end
         
     % Mediana assimétrica para manter apenas linhas verticais
-    Gmed = medfilt2(G, [15 3]);
+    Gmed = medfilt2(G, [BOX_FILTER_SIZE round(BOX_FILTER_SIZE/5)]);
     if debug
         figure; imshow(Gmed); 
         title('Mediana assimétrica para manter apenas linhas verticais');
     end
     
     % Box filter
-    Gbox = imboxfilt(Gmed, 15);
+    Gbox = imboxfilt(Gmed, BOX_FILTER_SIZE);
     Gbox = Gbox > 0.5;
     if debug
         figure; imshow(Gbox); title('Box filter');
