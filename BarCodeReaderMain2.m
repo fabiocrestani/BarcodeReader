@@ -21,11 +21,11 @@
 close all; clear all; clc;
 
 % Carrega miniOCR
-miniOCR = load('../miniOCR/miniOCR.mat');
+miniOCR = load('miniOCR/miniOCR.mat');
 miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
-setFolder = '../imageSets/set3-cropped-random';
+setFolder = 'imageSets/set3-cropped-random';
 %setFolder = '../imageSets/set2-fotos';
 imageFiles = dir([setFolder '/*.png']);
 if length(imageFiles) < 1
@@ -74,6 +74,10 @@ for i = 1 : numberOfFiles
         firstGroupDigits, firstDigit);
     [secondGroupInteger, secondGroupString] = decodeGroup(...
         secondGroupDigits);
+
+    % Calcula CRC
+    [isCRCCorrect, computedCRC] = calculateCRC(firstDigit, ...
+        firstGroupString, secondGroupString);   
     
     % Resultados
     debug = false;
@@ -87,20 +91,23 @@ for i = 1 : numberOfFiles
         subplot(312); stem(firstGroup); title('firstGroup'); grid;
         subplot(313); stem(secondGroup); title('secondGroup'); grid;
     end
-    
     fprintf('Esperado:  %s-%s-%s\n', firstDigitExptd, firstGroupExptd, ...
         secondGroupExptd);
     fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
         firstGroupString, secondGroupString);
-
     if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
         strcmp(firstGroupExptd, firstGroupString) && ...
         strcmp(secondGroupExptd, secondGroupString)        
-        fprintf('Resultado: OK\n\n');
+        fprintf('Resultado: OK\n');
         acertos = acertos + 1;
     else
-        fprintf('Resultado: Não OK\n\n');
+        fprintf('Resultado: Não OK\n');
         erros = erros + 1;
+    end
+    if isCRCCorrect
+        fprintf('CRC:       OK\n\n');
+    else 
+        fprintf('CRC:       Não OK\n\n');
     end
 end
 
