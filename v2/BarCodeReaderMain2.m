@@ -26,6 +26,7 @@ miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
 setFolder = '../imageSets/set3-cropped-random';
+%setFolder = '../imageSets/set0';
 imageFiles = dir([setFolder '/*.png']);      
 numberOfFiles = length(imageFiles);
 %numberOfFiles = 1;
@@ -85,10 +86,10 @@ for i = 1 : numberOfFiles
         secondGroupExptd);
     fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
         firstGroupString, secondGroupString);
+
     if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
         strcmp(firstGroupExptd, firstGroupString) && ...
-        strcmp(secondGroupExptd, secondGroupString)
-        
+        strcmp(secondGroupExptd, secondGroupString)        
         fprintf('Resultado: OK\n\n');
         acertos = acertos + 1;
     else

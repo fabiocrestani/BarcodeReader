@@ -60,11 +60,25 @@ function [barWidths, firstGroup, secondGroup] = ...
     bars = bars*255;
     barsPlot = repmat(bars, [100 1]);
     
+    % Conta o número de barras
+    barsAcum = 0;
+    for k = 2 : length(barWidths)
+        barsAcum(k) = barsAcum(k - 1) + abs(barWidths(k));
+    end
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % TODO
     % Isso aqui não ficou robusto o suficiente
+    % Levar em consideração a largura da imagem ??
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    barWidths = round(barWidths * (3/5));
+    acumWidth = barsAcum(length(barsAcum));
+    %maxWidthBar = max(barWidths)
+    maxWidthBar = 5;
+    %fprintf('acumWidth: %d\n', acumWidth);
+    coef = acumWidth / (6*7);
+    coef = coef / maxWidthBar;
+    %barWidths = round(barWidths * (3/5));
+    barWidths = round(barWidths * coef);
     
     if debug
         figure;
@@ -74,12 +88,7 @@ function [barWidths, firstGroup, secondGroup] = ...
         xlabel(['Valor negativo: barra preta de tamanho y, ' ...
             'valor positivo: barra branca de tamanho y']);
     end
-    
-    barsAcum = 0;
-    for k = 2 : length(barWidths)
-        barsAcum(k) = barsAcum(k - 1) + abs(barWidths(k));
-    end
-    
+        
     if debug
         subplot(313); stem(barsAcum); title('barsAcum'); grid;
     end

@@ -10,14 +10,10 @@ function firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR)
     
     for j = 1 : length(miniOCR)
         miniOCRDigit = imboxfilt(miniOCR{j}, FILTER_SIZE);
-        %diferencaAbsoluta = abs(firstDigitResized - miniOCR{j});
         diferencaAbsoluta = abs(firstDigitResized - miniOCRDigit);
-        
         diferencas(j) = mean(diferencaAbsoluta(:));
     end
     
     [~, indexMaiorProximidade] = min(diferencas);
     firstDigit = indexMaiorProximidade - 1;
-    
-    figure; imshow(firstDigitResized); title('First Digit'); xlabel(firstDigit);
 end
