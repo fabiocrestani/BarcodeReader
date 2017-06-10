@@ -1,0 +1,22 @@
+1 - Calcula gradientes em x e y, módulo e ângulo
+
+	Deixa apenas as regiões onde há bastante variação horizontal e 
+	pouca variação vertical
+
+	mascaraNegadaX = ~(Gdir > 150);
+	mascaraNegadaY = ~(Gdir < 20);
+	Gdir(mascaraNegadaX & mascaraNegadaY) = 0;
+	G = Gmag .* Gdir;
+
+
+2 - Mediana assimétrica para manter apenas linhas verticais
+    BOX_FILTER_SIZE = 15;
+    Gmed = medfilt2(G, [BOX_FILTER_SIZE round(BOX_FILTER_SIZE/5)]);
+
+
+3 - Box filter e limiarização
+    Gbox = imboxfilt(Gmed, BOX_FILTER_SIZE);
+    Gbox = Gbox > 0.5;
+
+
+4 - Segmentação, labeling e seleção de blob através de propriedades geométricas
