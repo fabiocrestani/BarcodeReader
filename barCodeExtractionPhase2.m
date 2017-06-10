@@ -6,7 +6,6 @@ function [extractedBarCode2, boundingBox2] = ...
     [m, n] = size(extractedBarCode1);
     inicioDoCodigoDeBarras = 0;
     for j = 1 : n
-        %coluna = extractedBarCode1(1 : round(m/2), j);
         c = (mean(extractedBarCode1(1 : round(m/2), j))) < 250;
         if c == 1
             inicioDoCodigoDeBarras = j;
@@ -17,7 +16,6 @@ function [extractedBarCode2, boundingBox2] = ...
     % Determina fim do código de barras
     fimDoCodigoDeBarras = n;
     for j = n : -1 : 1
-        %coluna = extractedBarCode1(1 : round(m/2), j);
         c = (mean(extractedBarCode1(1 : round(m/2), j))) < 250;
         if c == 1
             fimDoCodigoDeBarras = j;
@@ -38,6 +36,7 @@ function [extractedBarCode2, boundingBox2] = ...
             'EdgeColor', 'y');
         rectangle('Position', boundingBox2, 'Linewidth', 1, ...
             'EdgeColor', 'g');
+        title('Determina início e final exatos do código de barras');
         hold off;
     end
 

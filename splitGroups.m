@@ -22,10 +22,10 @@ function [barWidths, firstGroup, secondGroup] = ...
     
     if debug
         figure;
-        subplot(311); imshow(extractedBarCode3); 
+        subplot(221); imshow(extractedBarCode3); 
         title('extractedBarCode3');
-        subplot(312); stem(GxMean); title('GxMean');
-        subplot(313); stem(GxMean2); title('GxMean2');
+        subplot(222); stem(GxMean); title('GxMean');
+        subplot(223); stem(GxMean2); title('GxMean2');
     end
     
     % Percorre da esquerda para a direita contando o tamanho das áreas
@@ -52,9 +52,7 @@ function [barWidths, firstGroup, secondGroup] = ...
     end
     
     if debug
-        figure; 
-        subplot(211); stem(GxMean2); title('GxMean2'); 
-        subplot(212); stem(bars);
+        subplot(224); stem(bars); title('bars');
     end
         
     bars = bars*255;
@@ -82,15 +80,15 @@ function [barWidths, firstGroup, secondGroup] = ...
     
     if debug
         figure;
-        subplot(311); imshow(barsPlot); title('bars'); 
+        subplot(211); imshow(barsPlot); title('bars'); 
         xlabel('Código de barras reconstruído');
-        subplot(312); stem(barWidths); title('barWidths'); grid;
+        subplot(212); stem(barWidths); title('barWidths'); grid;
         xlabel(['Valor negativo: barra preta de tamanho y, ' ...
             'valor positivo: barra branca de tamanho y']);
     end
         
     if debug
-        subplot(313); stem(barsAcum); title('barsAcum'); grid;
+        %subplot(313); stem(barsAcum); title('barsAcum'); grid;
     end
     
     % Separa os grupos

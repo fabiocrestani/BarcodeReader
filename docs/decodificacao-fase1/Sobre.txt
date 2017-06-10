@@ -20,3 +20,6 @@
 
 
 4 - Segmentação, labeling e seleção de blob através de propriedades geométricas
+
+
+5 - Código de barras resultate da primeira fase de extração

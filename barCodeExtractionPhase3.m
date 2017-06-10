@@ -20,6 +20,7 @@ function [firstDigitExtracted, boundingBox3] = ...
         rectangle('Position', boundingBox3, 'Linewidth', 1, ...
             'EdgeColor', 'g');
         hold off;
+        title('Primeiro dígito localizado');
     end
     
     firstDigitExtracted = imcrop(image, boundingBox3);
