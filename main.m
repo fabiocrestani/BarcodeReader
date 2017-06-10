@@ -25,8 +25,8 @@ miniOCR = load('miniOCR/miniOCR.mat');
 miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
-%setFolder = 'imageSets/set3-cropped-random';
-setFolder = 'imageSets/set2-fotos';
+setFolder = 'imageSets/set3-cropped-random';
+%setFolder = 'imageSets/set2-fotos';
 imageFiles = dir([setFolder '/*.png']);
 if length(imageFiles) < 1
     error('Erro: main. Nenhum arquivo encontrado');
@@ -34,15 +34,15 @@ end
 numberOfFiles = length(imageFiles);
 
 % Seleção das funções
-deteccao         = true;    % Encontra código de barras na foto
-decodificacao    = false;   % Decodifica código de barras já encontrado
-showResultImages = true;    % true se quiser mostrar as imagens resultantes
+deteccao         = false;    % Encontra código de barras na foto
+decodificacao    = true;   % Decodifica código de barras já encontrado
+showResultImages = false;    % true se quiser mostrar as imagens resultantes
 
 % Para comparação
 acertos = 0;
 erros = 0;
 
-for i = 1 : numberOfFiles
+for i = 1 : 1
     
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
@@ -50,7 +50,7 @@ for i = 1 : numberOfFiles
     
     % Primeira fase de extração - extração grosseira do código de barras
     [extractedBarCode1, boundingBox1] = ...
-        barCodeExtractionPhase1(image, false);
+        barCodeExtractionPhase1(image, true);
     
     % Segunda fase de extração - refina extração do código de barras
     [extractedBarCode2, boundingBox2] = barCodeExtractionPhase2(image, ...
@@ -87,6 +87,7 @@ for i = 1 : numberOfFiles
             firstGroupString, secondGroupString);   
 
         % Resultados
+        fprintf('Arquivo:   %d de %d\n', i, numberOfFiles);
         fprintf('Esperado:  %s-%s-%s\n', firstDigitExptd, ...
             firstGroupExptd, secondGroupExptd);
         fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
