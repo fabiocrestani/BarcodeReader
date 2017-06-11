@@ -1,10 +1,18 @@
-function firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR)
+function [firstDigit] = identifyFirstDigit(firstDigitExtracted, ...
+    miniOCR, firstDigitExptd, bypassFirstDigitDecode)
 % Redimensiona imagem de entrada e compara com os 10 dígitos possíveis
 
-    firstDigitResized = imresize(firstDigitExtracted, size(miniOCR{1}));
-    
+    if bypassFirstDigitDecode
+        firstDigit = firstDigitExptd;
+        return;
+    end
+
     FILTER_SIZE = 5;
-    firstDigitResized = imboxfilt(firstDigitResized, FILTER_SIZE);
+    
+    firstDigitResized = im2bw(firstDigitExtracted, 0.5);
+    figure; imshow(firstDigitResized);
+    firstDigitResized = imresize(firstDigitResized, size(miniOCR{1}));
+    %firstDigitResized = imboxfilt(firstDigitResized, FILTER_SIZE);
     
     diferencas = zeros(1, length(miniOCR));
     

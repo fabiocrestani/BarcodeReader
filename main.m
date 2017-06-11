@@ -33,45 +33,34 @@ end
 numberOfFiles = length(imageFiles);
 
 % Seleção das funções
-showResultImages = true;   % true se quiser mostrar as imagens resultantes
+showResultImages = true;
+bypassFirstDigitDecode = true;
 
 % Para comparação
 acertos = 0;
 
-for i = 8 : 8 
+for i = 1 : 3
     
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
         readAndPrepareFile(imageFiles(i), setFolder);
     
-    % Primeira fase de extração - extração grosseira do código de barras
-    [extractedBarCode1, boundingBox1] = ...
-        barCodeExtractionPhase1(image, false, 15);
-    
     % Endireita código de barras
-    %extractedBarCode1Rotate = rotateBarCode(extractedBarCode1, false);
-    extractedBarCode1Rotate = extractedBarCode1;
-    
-
-    
-    %[extractedBarCode2, boundingBox2] = ...
-     %  barCodeExtractionPhase1(extractedBarCode1, true, 32);
+    extractedBarCode1Rotate = rotateBarCode(image, false);
     
     % Segunda fase de extração - refina extração do código de barras
-    %[extractedBarCode2, boundingBox2] = barCodeExtractionPhase2(image, ...
-    %     extractedBarCode1, boundingBox1, false);
+    [m, n] = size(extractedBarCode1Rotate);
+    boundingBox1 = [1 1 n m];
+    [extractedBarCode2, boundingBox2, firstDigitExtracted] = ...
+        barCodeExtractionPhase2(image, extractedBarCode1Rotate, ...
+        boundingBox1, false);
     
     % Redimensiona
-%     extractedBarCode2 = imresize(extractedBarCode2, [171 191]);
+    extractedBarCode2 = imresize(extractedBarCode2, [171 191]);
     
-    % Decodificação
-    % Terceira fase de extração - extrai primeiro dígito
-%     firstDigitExtracted = ...
-%         getFirstDigitFromDetection(extractedBarCode2, false);
-
-
     % Identifica primeiro dígito
-%     firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR);
+    firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR, ...
+        firstDigitExptd, bypassFirstDigitDecode);
 
     % Cropa código de barras novamente
 %     [m, n] = size(extractedBarCode2);
@@ -124,11 +113,13 @@ for i = 8 : 8
 %     end
     
     if showResultImages
-        figure; imshow(image); title('Primeira fase');
-        hold on; rectangle('Position', boundingBox1, 'Linewidth', 2, ...
-            'EdgeColor', 'g');
-        hold off;
-        figure; imshow(extractedBarCode1Rotate); title('extractedBarCode1Rotate');
+        figure; 
+        subplot(221); imshow(extractedBarCode1Rotate);
+        title(['Primeira fase da extração (' num2str(i) ')']);
+        subplot(222); imshow(extractedBarCode2); 
+        title('Segunda fase da extração');
+        subplot(223); imshow(firstDigitExtracted); 
+        title(['Primeiro dígito = ' num2str(firstDigit)]);
     end
 end
 

@@ -6,7 +6,7 @@ function [extractedBarCode1Rotate] = rotateBarCode(extractedBarCode1, ...
 
     Ibw = ~im2bw(extractedBarCode1, graythresh(extractedBarCode1)); 
     [H,theta,rho] = hough(Ibw);
-    peaks  = houghpeaks(H, 30);
+    peaks  = houghpeaks(H, 45);
     lines = houghlines(Ibw, theta, rho, peaks);
 
     if debug
@@ -33,8 +33,17 @@ function [extractedBarCode1Rotate] = rotateBarCode(extractedBarCode1, ...
     end
     
     angle = mean(validAngles);
-    extractedBarCode1Rotate = imrotate(extractedBarCode1, angle, ...
-        'bilinear');
+    if ~isnan(angle)
+        extractedBarCode1Rotate = imrotate(extractedBarCode1, angle, ...
+        'bilinear', 'crop');
+    
+        % Corrige bordas pretas resultantes do imrotate
+        mask = true(size(extractedBarCode1));
+        maskRotated = ~imrotate(mask, angle, 'crop');
+        extractedBarCode1Rotate(maskRotated) = 255;
+    else
+        extractedBarCode1Rotate = extractedBarCode1;
+    end
     
     if debug
         figure; imshowpair(extractedBarCode1, extractedBarCode1Rotate, ...
