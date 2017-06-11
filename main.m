@@ -34,15 +34,14 @@ end
 numberOfFiles = length(imageFiles);
 
 % Seleção das funções
-deteccao         = false;    % Encontra código de barras na foto
-decodificacao    = true;   % Decodifica código de barras já encontrado
-showResultImages = false;    % true se quiser mostrar as imagens resultantes
+deteccao         = false;   % Encontra código de barras na foto
+decodificacao    = true;    % Decodifica código de barras já encontrado
+showResultImages = false;   % true se quiser mostrar as imagens resultantes
 
 % Para comparação
 acertos = 0;
-erros = 0;
 
-for i = 1 : 1
+for i = 1 : numberOfFiles
     
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
@@ -50,7 +49,7 @@ for i = 1 : 1
     
     % Primeira fase de extração - extração grosseira do código de barras
     [extractedBarCode1, boundingBox1] = ...
-        barCodeExtractionPhase1(image, true);
+        barCodeExtractionPhase1(image, false);
     
     % Segunda fase de extração - refina extração do código de barras
     [extractedBarCode2, boundingBox2] = barCodeExtractionPhase2(image, ...
@@ -62,15 +61,46 @@ for i = 1 : 1
     % Decodificação
     if decodificacao
         % Terceira fase de extração - extrai primeiro dígito
-        [firstDigitExtracted, boundingBox3] = barCodeExtractionPhase3(...
-            image, extractedBarCode2, boundingBox2, false);
+        if deteccao
+            firstDigitExtracted = ...
+                getFirstDigitFromDetection(extractedBarCode2, false);
+        else
+            [firstDigitExtracted, boundingBox3] = ...
+                barCodeExtractionPhase3(image, extractedBarCode2, ...
+                boundingBox2, false);
+        end
 
         % Identifica primeiro dígito
         firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR);
 
+        % Cropa código de barras novamente
+        [m, n] = size(extractedBarCode2);
+        croppedBarCode = imcrop(extractedBarCode2, ...
+                                    [1, (m/3), n, m - 2*(m/3)]);
+        % 
+        if deteccao
+            croppedBarCode = imresize(croppedBarCode, [58 190]);
+            %croppedBarCode = im2bw(croppedBarCode, ...
+            %    graythresh(croppedBarCode));
+            croppedBarCode = imadjust(croppedBarCode);
+    
+            [Gx, Gy] = imgradientxy(image);
+            [Gmag, Gdir] = imgradient(Gx, Gy);
+            
+            % Média por coluna
+            %GdirMean = mean(Gdir, 1);
+            %angle = mean(Gdir(:)) / 2;
+            %rotated = imrotate(extractedBarCode2, angle, 'bilinear', 'crop');
+            %figure;
+            %subplot(121); imshow(extractedBarCode2);
+            %subplot(122); imshow(rotated);
+            %figure; imshowpair(extractedBarCode2, rotated);
+            %extractedBarCode2 = rotated;
+        end
+        
         % Determina primeiro e segundo grupo do código de barras
         [barWidths, firstGroup, secondGroup] = ...
-            splitGroups(extractedBarCode2, false);
+            splitGroups(croppedBarCode, false);
 
         % Divide cada grupo em 6 dígitos
         firstGroupDigits = splitGroupDigits(firstGroup);
@@ -99,7 +129,6 @@ for i = 1 : 1
             acertos = acertos + 1;
         else
             fprintf('Resultado: Não OK\n');
-            erros = erros + 1;
         end
         if isCRCCorrect
             fprintf('CRC:       OK\n\n');
@@ -133,6 +162,7 @@ for i = 1 : 1
     end
 end
 
+erros = numberOfFiles - acertos;
 acertos = 100 * acertos / numberOfFiles;
 erros = 100 * erros / numberOfFiles;
 fprintf('Acertos:   %.1f%% \nErros:     %.1f%%\n\n', acertos, erros);

@@ -1,34 +1,33 @@
 function [barWidths, firstGroup, secondGroup] = ...
-    splitGroups(extractedBarCode2, debug)
+    splitGroups(croppedBarCode, debug)
 % Separa primeiro e segundo grupo
-
-    % Cropa código de barras novamente
-    [m, n] = size(extractedBarCode2);
-    extractedBarCode3 = imcrop(extractedBarCode2, ...
-                                    [1, (m/3), n, m - 2*(m/3)]);
-    
-    % Limiarização
-    %extractedBarCode3 = im2bw(extractedBarCode3, 0.6);
-    
+ 
     % Calcula gradientes, módulo e ângulo
-    [Gx, ~] = imgradientxy(extractedBarCode3);
+    [Gx, ~] = imgradientxy(croppedBarCode);
     
     % Faz a média por coluna
     GxMean = mean(Gx, 1);
     GxMean2 = GxMean;
 
     % Aplica dois thresholds
-    threshold = max(GxMean(:))/2;
+    threshold = max(GxMean(:))/5;
     GxMean2(abs(GxMean) < threshold) = 0;
     GxMean2(GxMean > threshold) = 1;
     GxMean2(GxMean < -threshold) = -1;
     
     if debug
         figure;
-        subplot(221); imshow(extractedBarCode3); 
+        subplot(221); imshow(croppedBarCode); 
         title('extractedBarCode3');
-        subplot(222); stem(GxMean); title('GxMean');
-        subplot(223); stem(GxMean2); title('GxMean2');
+        subplot(222); stem(GxMean, 'Marker', 'x', 'LineWidth', 1); 
+        title('GxMean'); grid;
+        t = 1:0.1:200;
+        hold on; 
+        plot(t, ones(size(t))*threshold, 'r', 'LineWidth', 1);
+        plot(t, -1*ones(size(t))*threshold, 'r'); 
+        hold off;
+        subplot(223); stem(GxMean2, 'Marker', 'none', 'LineWidth', 2); 
+        title('GxMean2');
     end
     
     % Percorre da esquerda para a direita contando o tamanho das áreas
@@ -55,7 +54,8 @@ function [barWidths, firstGroup, secondGroup] = ...
     end
     
     if debug
-        subplot(224); stem(bars); title('bars');
+        subplot(224); stem(bars, 'Marker', 'none', 'LineWidth', 2); 
+        title('bars');
     end
         
     bars = bars*255;
@@ -81,21 +81,46 @@ function [barWidths, firstGroup, secondGroup] = ...
     %barWidths = round(barWidths * (3/5));
     barWidths = round(barWidths * coef);
     
+
+    
+%     barWidths
+%     % Separa os grupos
+%     trio = [];
+%     eventos = [];
+%     for i = 1 : length(barWidths) - 3
+%         trio = barWidths(i : i+2);
+%         if trio == [1 -1 1]
+%             eventos = [eventos i];
+%         end
+%     end
+%     eventos(1)
+    
+    inicioG1 = 4;
+    fimG1 = 27;
+    inicioG2 = 33;
+    fimG2 = 56;
+    
+    firstGroup = barWidths(inicioG1 : fimG1);
+    secondGroup = barWidths(inicioG2 : fimG2);
+    
     if debug
         figure;
         subplot(211); imshow(barsPlot); title('bars'); 
         xlabel('Código de barras reconstruído');
-        subplot(212); stem(barWidths); title('barWidths'); grid;
+        subplot(212); stem(barWidths, 'Marker', 'none', 'LineWidth', 3); 
+        title('barWidths'); grid;
         xlabel(['Valor negativo: barra preta de tamanho y, ' ...
             'valor positivo: barra branca de tamanho y']);
+        hold all;
+        stem([zeros(1, inicioG1 - 1) firstGroup], 'Marker', 'none', ...
+            'LineWidth', 3);
+        stem([zeros(1, inicioG2 - 1) secondGroup], 'Marker', 'none', ...
+            'LineWidth', 3);
+        hold off;
     end
         
     if debug
         %subplot(313); stem(barsAcum); title('barsAcum'); grid;
     end
-    
-    % Separa os grupos
-    firstGroup = barWidths(4:27);
-    secondGroup = barWidths(33:56);
 
 end
