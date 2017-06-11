@@ -19,7 +19,11 @@ function [digits] = splitGroupDigits(group)
     digits = zeros(NUM_DIGITS, DIGIT_SIZE);
     for digitIdx = 1 : NUM_DIGITS
         for k = 1 : DIGIT_SIZE;
-            digits(digitIdx, k) = serialized(serializedIdx);
+            if serializedIdx > length(serialized)
+                digits(digitIdx, k) = 0;
+            else
+                digits(digitIdx, k) = serialized(serializedIdx);
+            end
             serializedIdx = serializedIdx + 1;
         end
     end

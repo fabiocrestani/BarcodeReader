@@ -4,12 +4,12 @@ function [extractedBarCode1, boundingBox] = ...
 
     MIN_AREA = 1000;
     EXPECTED_RATIO = 0.65;
-    BOUNDING_BOX_MARGIN = -1;
+    BOUNDING_BOX_MARGIN = 0;
     BOX_FILTER_SIZE = 15;
 
     [m, n] = size(image);
     if m*n > 790*960*2
-        BOX_FILTER_SIZE = 35
+        BOX_FILTER_SIZE = 25
     end
     
     % Calcula gradientes, módulo e ângulo
@@ -46,7 +46,7 @@ function [extractedBarCode1, boundingBox] = ...
     end
     
     % Encontra blobs
-    stats = regionprops(Gbox);
+    stats = regionprops(Gbox, 'Area', 'BoundingBox', 'FilledImage');
     if debug
         figure; imshow(Gbox); title('Blobs'); hold on;
     end
@@ -72,17 +72,22 @@ function [extractedBarCode1, boundingBox] = ...
     razoes = abs(razoes - EXPECTED_RATIO);
     [~, minIndex] = min(razoes);
     boundingBox = stats(minIndex).BoundingBox;
-    boundingBox(1:2) = boundingBox(1:2) - BOUNDING_BOX_MARGIN;
-    boundingBox(3:4) = boundingBox(3:4) + 2*BOUNDING_BOX_MARGIN;
+    %boundingBox(1:2) = boundingBox(1:2) - BOUNDING_BOX_MARGIN;
+    boundingBox(3:4) = boundingBox(3:4) - 1;
     if debug
         rectangle('Position', boundingBox, 'Linewidth', 2, ...
             'EdgeColor', 'g');
         hold off;
     end
-    %area = stats(minIndex).Area;    
+    
+    % Cropa região da imagem original
     extractedBarCode1 = imcrop(image, boundingBox);
     extractedBarCode1 = uint8(mat2gray(extractedBarCode1)*255);
-
+    
+    % Pega apenas região do blob selecionado e usa como máscara
+    %filledImage = stats(minIndex).FilledImage;
+    %extractedBarCode1 = extractedBarCode1 .* filledImage;
+    
     % Resultado
     if debug
         figure; imshow(extractedBarCode1); 

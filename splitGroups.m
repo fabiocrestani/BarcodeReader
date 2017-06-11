@@ -7,8 +7,11 @@ function [barWidths, firstGroup, secondGroup] = ...
     extractedBarCode3 = imcrop(extractedBarCode2, ...
                                     [1, (m/3), n, m - 2*(m/3)]);
     
+    % Limiarização
+    %extractedBarCode3 = im2bw(extractedBarCode3, 0.6);
+    
     % Calcula gradientes, módulo e ângulo
-    [Gx, ~] = imgradientxy(extractedBarCode2);
+    [Gx, ~] = imgradientxy(extractedBarCode3);
     
     % Faz a média por coluna
     GxMean = mean(Gx, 1);

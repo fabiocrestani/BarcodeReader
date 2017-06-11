@@ -4,9 +4,11 @@ function [extractedBarCode2, boundingBox2] = ...
 
     % Determina início do código de barras
     [m, n] = size(extractedBarCode1);
+    extractedBarCode1 = im2bw(extractedBarCode1, 0.4);
+    
     inicioDoCodigoDeBarras = 0;
     for j = 1 : n
-        c = (mean(extractedBarCode1(1 : round(m/2), j))) < 250;
+        c = (mean(extractedBarCode1(1 : round(m/5), j))) < 1;
         if c == 1
             inicioDoCodigoDeBarras = j;
             break;
@@ -16,7 +18,7 @@ function [extractedBarCode2, boundingBox2] = ...
     % Determina fim do código de barras
     fimDoCodigoDeBarras = n;
     for j = n : -1 : 1
-        c = (mean(extractedBarCode1(1 : round(m/2), j))) < 250;
+        c = (mean(extractedBarCode1(1 : round(m/5), j))) < 1;
         if c == 1
             fimDoCodigoDeBarras = j;
             break;

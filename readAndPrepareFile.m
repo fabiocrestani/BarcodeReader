@@ -9,7 +9,6 @@ function [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
     [m, n] = size(image);
     if m*n > 790*960*2
         image = imresize(image, 790*960*4 / (m*n));
-        %image = imresize(image, 0.9);
     end
 
     % Trata caso onde imagem de entrada é colorida
