@@ -25,8 +25,7 @@ miniOCR = load('miniOCR/miniOCR.mat');
 miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
-setFolder = 'imageSets/set3-cropped-random';
-%setFolder = 'imageSets/set2-fotos';
+setFolder = 'imageSets/set2-fotos';
 imageFiles = dir([setFolder '/*.png']);
 if length(imageFiles) < 1
     error('Erro: main. Nenhum arquivo encontrado');
@@ -34,14 +33,12 @@ end
 numberOfFiles = length(imageFiles);
 
 % Seleção das funções
-deteccao         = false;   % Encontra código de barras na foto
-decodificacao    = true;    % Decodifica código de barras já encontrado
-showResultImages = false;   % true se quiser mostrar as imagens resultantes
+showResultImages = true;   % true se quiser mostrar as imagens resultantes
 
 % Para comparação
 acertos = 0;
 
-for i = 1 : numberOfFiles
+for i = 8 : 8 
     
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
@@ -49,116 +46,89 @@ for i = 1 : numberOfFiles
     
     % Primeira fase de extração - extração grosseira do código de barras
     [extractedBarCode1, boundingBox1] = ...
-        barCodeExtractionPhase1(image, false);
+        barCodeExtractionPhase1(image, false, 15);
+    
+    % Endireita código de barras
+    %extractedBarCode1Rotate = rotateBarCode(extractedBarCode1, false);
+    extractedBarCode1Rotate = extractedBarCode1;
+    
+
+    
+    %[extractedBarCode2, boundingBox2] = ...
+     %  barCodeExtractionPhase1(extractedBarCode1, true, 32);
     
     % Segunda fase de extração - refina extração do código de barras
-    [extractedBarCode2, boundingBox2] = barCodeExtractionPhase2(image, ...
-        extractedBarCode1, boundingBox1, false);
+    %[extractedBarCode2, boundingBox2] = barCodeExtractionPhase2(image, ...
+    %     extractedBarCode1, boundingBox1, false);
     
     % Redimensiona
-    extractedBarCode2 = imresize(extractedBarCode2, [171 191]);
+%     extractedBarCode2 = imresize(extractedBarCode2, [171 191]);
     
     % Decodificação
-    if decodificacao
-        % Terceira fase de extração - extrai primeiro dígito
-        if deteccao
-            firstDigitExtracted = ...
-                getFirstDigitFromDetection(extractedBarCode2, false);
-        else
-            [firstDigitExtracted, boundingBox3] = ...
-                barCodeExtractionPhase3(image, extractedBarCode2, ...
-                boundingBox2, false);
-        end
+    % Terceira fase de extração - extrai primeiro dígito
+%     firstDigitExtracted = ...
+%         getFirstDigitFromDetection(extractedBarCode2, false);
 
-        % Identifica primeiro dígito
-        firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR);
 
-        % Cropa código de barras novamente
-        [m, n] = size(extractedBarCode2);
-        croppedBarCode = imcrop(extractedBarCode2, ...
-                                    [1, (m/3), n, m - 2*(m/3)]);
-        % 
-        if deteccao
-            croppedBarCode = imresize(croppedBarCode, [58 190]);
-            %croppedBarCode = im2bw(croppedBarCode, ...
-            %    graythresh(croppedBarCode));
-            croppedBarCode = imadjust(croppedBarCode);
-    
-            [Gx, Gy] = imgradientxy(image);
-            [Gmag, Gdir] = imgradient(Gx, Gy);
-            
-            % Média por coluna
-            %GdirMean = mean(Gdir, 1);
-            %angle = mean(Gdir(:)) / 2;
-            %rotated = imrotate(extractedBarCode2, angle, 'bilinear', 'crop');
-            %figure;
-            %subplot(121); imshow(extractedBarCode2);
-            %subplot(122); imshow(rotated);
-            %figure; imshowpair(extractedBarCode2, rotated);
-            %extractedBarCode2 = rotated;
-        end
-        
-        % Determina primeiro e segundo grupo do código de barras
-        [barWidths, firstGroup, secondGroup] = ...
-            splitGroups(croppedBarCode, false);
+    % Identifica primeiro dígito
+%     firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR);
 
-        % Divide cada grupo em 6 dígitos
-        firstGroupDigits = splitGroupDigits(firstGroup);
-        secondGroupDigits = splitGroupDigits(secondGroup);
+    % Cropa código de barras novamente
+%     [m, n] = size(extractedBarCode2);
+%     croppedBarCode = imcrop(extractedBarCode2, ...
+%                                 [1, (m/3), n, m - 2*(m/3)]);
+    % 
+%     croppedBarCode = imresize(croppedBarCode, [58 190]);
+%     %croppedBarCode = im2bw(croppedBarCode, ...
+%     %    graythresh(croppedBarCode));
+%     croppedBarCode = imadjust(croppedBarCode);
+%     [Gx, Gy] = imgradientxy(image);
+%     [Gmag, Gdir] = imgradient(Gx, Gy);
 
-        % Decodifica grupo
-        [firstGroupInteger, firstGroupString] = decodeGroup(...
-            firstGroupDigits, firstDigit);
-        [secondGroupInteger, secondGroupString] = decodeGroup(...
-            secondGroupDigits);
+    % Determina primeiro e segundo grupo do código de barras
+%     [barWidths, firstGroup, secondGroup] = ...
+%         splitGroups(croppedBarCode, false);
 
-        % Calcula CRC
-        [isCRCCorrect, computedCRC] = calculateCRC(firstDigit, ...
-            firstGroupString, secondGroupString);   
+    % Divide cada grupo em 6 dígitos
+%     firstGroupDigits = splitGroupDigits(firstGroup);
+%     secondGroupDigits = splitGroupDigits(secondGroup);
 
-        % Resultados
-        fprintf('Arquivo:   %d de %d\n', i, numberOfFiles);
-        fprintf('Esperado:  %s-%s-%s\n', firstDigitExptd, ...
-            firstGroupExptd, secondGroupExptd);
-        fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
-            firstGroupString, secondGroupString);
-        if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
-            strcmp(firstGroupExptd, firstGroupString) && ...
-            strcmp(secondGroupExptd, secondGroupString)        
-            fprintf('Resultado: OK\n');
-            acertos = acertos + 1;
-        else
-            fprintf('Resultado: Não OK\n');
-        end
-        if isCRCCorrect
-            fprintf('CRC:       OK\n\n');
-        else 
-            fprintf('CRC:       Não OK\n\n');
-        end
-    end
+    % Decodifica grupo
+%     [firstGroupInteger, firstGroupString] = decodeGroup(...
+%         firstGroupDigits, firstDigit);
+%     [secondGroupInteger, secondGroupString] = decodeGroup(...
+%         secondGroupDigits);
+
+    % Calcula CRC
+%     [isCRCCorrect, computedCRC] = calculateCRC(firstDigit, ...
+%         firstGroupString, secondGroupString);   
+
+    % Resultados
+%     fprintf('Arquivo:   %d de %d\n', i, numberOfFiles);
+%     fprintf('Esperado:  %s-%s-%s\n', firstDigitExptd, ...
+%         firstGroupExptd, secondGroupExptd);
+%     fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
+%         firstGroupString, secondGroupString);
+%     if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
+%         strcmp(firstGroupExptd, firstGroupString) && ...
+%         strcmp(secondGroupExptd, secondGroupString)        
+%         fprintf('Resultado: OK\n');
+%         acertos = acertos + 1;
+%     else
+%         fprintf('Resultado: Não OK\n');
+%     end
+%     if isCRCCorrect
+%         fprintf('CRC:       OK\n\n');
+%     else 
+%         fprintf('CRC:       Não OK\n\n');
+%     end
     
     if showResultImages
-        if decodificacao
-            figure; imshow(extractedBarCode1); 
-            title('1a fase da extração');
-            figure; imshow(extractedBarCode2); 
-            title('2a fase da extração');
-            figure; imshow(firstDigitExtracted); 
-            title('3a fase da extração'); 
-            xlabel(firstDigit);
-            figure;
-            subplot(311); stem(barWidths); title('barWidths'); grid;
-            subplot(312); stem(firstGroup); title('firstGroup'); grid;
-            subplot(313); stem(secondGroup); title('secondGroup'); grid;
-        else
-            figure;
-            subplot(121); imshow(image);
-            hold on;
-            rectangle('Position', boundingBox1, 'Linewidth', 2, ...
-                'EdgeColor', 'g');
-            hold off;
-            subplot(122); imshow(extractedBarCode2);
-        end
+        figure; imshow(image); title('Primeira fase');
+        hold on; rectangle('Position', boundingBox1, 'Linewidth', 2, ...
+            'EdgeColor', 'g');
+        hold off;
+        figure; imshow(extractedBarCode1Rotate); title('extractedBarCode1Rotate');
     end
 end
 

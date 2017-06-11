@@ -1,16 +1,20 @@
-function [extractedBarCode1, boundingBox] = ...
-                                barCodeExtractionPhase1(image, debug)
+function [extractedBarCode1, boundingBox] = barCodeExtractionPhase1(...
+    image, debug, BOX_FILTER_SIZE)
 % Extrai o código de barras de uma imagem maior
 
-    MIN_AREA = 1000;
     EXPECTED_RATIO = 0.65;
-    BOUNDING_BOX_MARGIN = 0;
-    BOX_FILTER_SIZE = 15;
+     %= 15;
 
+    originalImage = image;
     [m, n] = size(image);
-    if m*n > 790*960*2
-        BOX_FILTER_SIZE = 25
+    resizeRatio = 1;
+    if m*n > 790*960
+        resizeRatio = 1 / (790*960 / (m*n));
+        image = imresize(image, 790*960 / (m*n));
     end
+    image = image*2.5;
+    
+    MIN_AREA = m*n/30;
     
     % Calcula gradientes, módulo e ângulo
     [Gx, Gy] = imgradientxy(image);
@@ -19,7 +23,7 @@ function [extractedBarCode1, boundingBox] = ...
     
     % Calcula e aplica máscara
     mascaraNegadaX = ~(Gdir > 150);
-    mascaraNegadaY = ~(Gdir < 20);
+    mascaraNegadaY = ~(Gdir < 30);
     Gdir(mascaraNegadaX & mascaraNegadaY) = 0;
     G = Gmag .* Gdir;
     if debug
@@ -32,7 +36,7 @@ function [extractedBarCode1, boundingBox] = ...
     end
         
     % Mediana assimétrica para manter apenas linhas verticais
-    Gmed = medfilt2(G, [BOX_FILTER_SIZE round(BOX_FILTER_SIZE/5)]);
+    Gmed = medfilt2(G, [BOX_FILTER_SIZE round(BOX_FILTER_SIZE/10)]);
     if debug
         figure; imshow(Gmed); 
         title('Mediana assimétrica para manter apenas linhas verticais');
@@ -72,7 +76,6 @@ function [extractedBarCode1, boundingBox] = ...
     razoes = abs(razoes - EXPECTED_RATIO);
     [~, minIndex] = min(razoes);
     boundingBox = stats(minIndex).BoundingBox;
-    %boundingBox(1:2) = boundingBox(1:2) - BOUNDING_BOX_MARGIN;
     boundingBox(3:4) = boundingBox(3:4) - 1;
     if debug
         rectangle('Position', boundingBox, 'Linewidth', 2, ...
@@ -81,12 +84,10 @@ function [extractedBarCode1, boundingBox] = ...
     end
     
     % Cropa região da imagem original
-    extractedBarCode1 = imcrop(image, boundingBox);
+    boundingBox = boundingBox*resizeRatio;
+    extractedBarCode1 = imcrop(originalImage, boundingBox);
     extractedBarCode1 = uint8(mat2gray(extractedBarCode1)*255);
-    
-    % Pega apenas região do blob selecionado e usa como máscara
-    %filledImage = stats(minIndex).FilledImage;
-    %extractedBarCode1 = extractedBarCode1 .* filledImage;
+	extractedBarCode1 = extractedBarCode1 * 2;
     
     % Resultado
     if debug

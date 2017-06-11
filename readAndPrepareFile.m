@@ -1,5 +1,5 @@
 function [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
-        readAndPrepareFile(imageFile, setFolder)
+    readAndPrepareFile(imageFile, setFolder)
 % Abre arquivo de imagem e pré-processa
     
     currentFileName = imageFile.name;
@@ -7,8 +7,8 @@ function [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
 
     % Redimensiona, se for muito grande
     [m, n] = size(image);
-    if m*n > 790*960*2
-        image = imresize(image, 790*960*4 / (m*n));
+    if m*n > 790*960*15
+        image = imresize(image, 790*960*15 / (m*n));
     end
 
     % Trata caso onde imagem de entrada é colorida
@@ -16,7 +16,6 @@ function [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
     if channelNumber == 3
         image = rgb2gray(image);
     end
-    image = mat2gray(image);
     
     % Obtém resultado esperado a partir do nome do arquivo
     firstDigitExptd = currentFileName(1);
