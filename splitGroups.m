@@ -23,7 +23,7 @@ function [barWidths, firstGroup, secondGroup] = ...
         title('extractedBarCode3');
         subplot(222); stem(GxMean, 'Marker', 'x', 'LineWidth', 1); 
         title('GxMean'); grid;
-        t = 1:0.1:200;
+        t = 0:0.1:200;
         hold on; 
         plot(t, ones(size(t))*threshold, 'r', 'LineWidth', 1);
         plot(t, -1*ones(size(t))*threshold, 'r'); 
