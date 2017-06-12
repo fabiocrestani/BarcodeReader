@@ -2,6 +2,8 @@ function [barWidths, firstGroup, secondGroup] = ...
     splitGroups(croppedBarCode, debug)
 % Separa primeiro e segundo grupo
  
+    croppedBarCode = imadjust(croppedBarCode);
+
     % Calcula gradientes, módulo e ângulo
     [Gx, ~] = imgradientxy(croppedBarCode);
     
@@ -10,7 +12,7 @@ function [barWidths, firstGroup, secondGroup] = ...
     GxMean2 = GxMean;
 
     % Aplica dois thresholds
-    threshold = max(GxMean(:))/5;
+    threshold = max(GxMean(:))/8;
     GxMean2(abs(GxMean) < threshold) = 0;
     GxMean2(GxMean > threshold) = 1;
     GxMean2(GxMean < -threshold) = -1;

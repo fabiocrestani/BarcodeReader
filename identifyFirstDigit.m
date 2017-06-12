@@ -3,7 +3,7 @@ function [firstDigit] = identifyFirstDigit(firstDigitExtracted, ...
 % Redimensiona imagem de entrada e compara com os 10 dígitos possíveis
 
     if bypassFirstDigitDecode
-        firstDigit = firstDigitExptd;
+        firstDigit = str2num(firstDigitExptd);
         return;
     end
 

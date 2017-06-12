@@ -14,7 +14,7 @@
 % GitHub: https://github.com/fabiocrestani                               %
 %                                                                        %
 % Versão 0.2.1                                                           %
-% 07/06/2017                                                             %
+% 11/06/2017                                                             %
 %                                                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -33,13 +33,13 @@ end
 numberOfFiles = length(imageFiles);
 
 % Seleção das funções
-showResultImages = true;
+showResultImages       = true;
 bypassFirstDigitDecode = true;
 
 % Para comparação
 acertos = 0;
 
-for i = 1 : 3
+for i = 1 : numberOfFiles
     
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
@@ -63,54 +63,47 @@ for i = 1 : 3
         firstDigitExptd, bypassFirstDigitDecode);
 
     % Cropa código de barras novamente
-%     [m, n] = size(extractedBarCode2);
-%     croppedBarCode = imcrop(extractedBarCode2, ...
-%                                 [1, (m/3), n, m - 2*(m/3)]);
-    % 
-%     croppedBarCode = imresize(croppedBarCode, [58 190]);
-%     %croppedBarCode = im2bw(croppedBarCode, ...
-%     %    graythresh(croppedBarCode));
-%     croppedBarCode = imadjust(croppedBarCode);
-%     [Gx, Gy] = imgradientxy(image);
-%     [Gmag, Gdir] = imgradient(Gx, Gy);
-
+    [m, n] = size(extractedBarCode2);
+    croppedBarCode = imcrop(extractedBarCode2, ...
+                                 [1, (m/5), n, m - 4*(m/5)]);
+ 
     % Determina primeiro e segundo grupo do código de barras
-%     [barWidths, firstGroup, secondGroup] = ...
-%         splitGroups(croppedBarCode, false);
+    [barWidths, firstGroup, secondGroup] = ...
+         splitGroups(croppedBarCode, true);
 
     % Divide cada grupo em 6 dígitos
-%     firstGroupDigits = splitGroupDigits(firstGroup);
-%     secondGroupDigits = splitGroupDigits(secondGroup);
+    firstGroupDigits = splitGroupDigits(firstGroup);
+    secondGroupDigits = splitGroupDigits(secondGroup);
 
     % Decodifica grupo
-%     [firstGroupInteger, firstGroupString] = decodeGroup(...
-%         firstGroupDigits, firstDigit);
-%     [secondGroupInteger, secondGroupString] = decodeGroup(...
-%         secondGroupDigits);
+    [firstGroupInteger, firstGroupString] = decodeGroup(...
+        firstGroupDigits, firstDigit);
+    [secondGroupInteger, secondGroupString] = decodeGroup(...
+        secondGroupDigits);
 
     % Calcula CRC
-%     [isCRCCorrect, computedCRC] = calculateCRC(firstDigit, ...
-%         firstGroupString, secondGroupString);   
+    [isCRCCorrect, computedCRC] = calculateCRC(firstDigit, ...
+        firstGroupString, secondGroupString);   
 
     % Resultados
-%     fprintf('Arquivo:   %d de %d\n', i, numberOfFiles);
-%     fprintf('Esperado:  %s-%s-%s\n', firstDigitExptd, ...
-%         firstGroupExptd, secondGroupExptd);
-%     fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
-%         firstGroupString, secondGroupString);
-%     if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
-%         strcmp(firstGroupExptd, firstGroupString) && ...
-%         strcmp(secondGroupExptd, secondGroupString)        
-%         fprintf('Resultado: OK\n');
-%         acertos = acertos + 1;
-%     else
-%         fprintf('Resultado: Não OK\n');
-%     end
-%     if isCRCCorrect
-%         fprintf('CRC:       OK\n\n');
-%     else 
-%         fprintf('CRC:       Não OK\n\n');
-%     end
+    fprintf('Arquivo:   %d de %d\n', i, numberOfFiles);
+    fprintf('Esperado:  %s-%s-%s\n', firstDigitExptd, ...
+        firstGroupExptd, secondGroupExptd);
+    fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
+        firstGroupString, secondGroupString);
+    if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
+        strcmp(firstGroupExptd, firstGroupString) && ...
+        strcmp(secondGroupExptd, secondGroupString)        
+        fprintf('Resultado: OK\n');
+        acertos = acertos + 1;
+    else
+        fprintf('Resultado: Não OK\n');
+    end
+    if isCRCCorrect
+        fprintf('CRC:       OK\n\n');
+    else 
+        fprintf('CRC:       Não OK\n\n');
+    end
     
     if showResultImages
         figure; 
@@ -120,6 +113,8 @@ for i = 1 : 3
         title('Segunda fase da extração');
         subplot(223); imshow(firstDigitExtracted); 
         title(['Primeiro dígito = ' num2str(firstDigit)]);
+        subplot(224); imshow(croppedBarCode);
+        title('Região a ser decodificada');
     end
 end
 
