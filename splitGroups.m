@@ -2,8 +2,25 @@ function [barWidths, firstGroup, secondGroup] = ...
     splitGroups(croppedBarCode, debug)
 % Separa primeiro e segundo grupo
  
-    croppedBarCode = imadjust(croppedBarCode);
-
+    %croppedBarCode = imadjust(croppedBarCode);
+    croppedBarCode = imadjust(croppedBarCode, [], [], 2.5)*1.3;
+    croppedBarCode = imsharpen(croppedBarCode);
+    croppedBarCodeBeforeBW = croppedBarCode;
+    %croppedBarCode = im2bw(croppedBarCode, graythresh(croppedBarCode));
+    croppedBarCode = im2bw(croppedBarCode, 0.7);
+    
+    figure;  
+    subplot(211); imshow([croppedBarCodeBeforeBW; 255*croppedBarCode]);
+    
+    % TODO melhorar a imagem
+    
+    %se = strel('line', 11, 90);
+    %croppedBarCode = imdilate(croppedBarCode, se);
+    croppedBarCode = imboxfilt(croppedBarCode, [7, 1]);
+    
+    subplot(212); imshow([croppedBarCodeBeforeBW; 255*croppedBarCode]);
+    
+    
     % Calcula gradientes, módulo e ângulo
     [Gx, ~] = imgradientxy(croppedBarCode);
     
@@ -12,18 +29,18 @@ function [barWidths, firstGroup, secondGroup] = ...
     GxMean2 = GxMean;
 
     % Aplica dois thresholds
-    threshold = max(GxMean(:))/8;
+    threshold = max(GxMean(:))/15;
     GxMean2(abs(GxMean) < threshold) = 0;
     GxMean2(GxMean > threshold) = 1;
     GxMean2(GxMean < -threshold) = -1;
     
     if debug
         figure;
-        subplot(221); imshow(croppedBarCode); 
+        subplot(221); imshow([croppedBarCodeBeforeBW; 255*croppedBarCode]); 
         title('extractedBarCode3');
         subplot(222); stem(GxMean, 'Marker', 'x', 'LineWidth', 1); 
         title('GxMean'); grid;
-        t = 0:0.1:200;
+        t = 0:0.1:600;
         hold on; 
         plot(t, ones(size(t))*threshold, 'r', 'LineWidth', 1);
         plot(t, -1*ones(size(t))*threshold, 'r'); 
@@ -74,16 +91,18 @@ function [barWidths, firstGroup, secondGroup] = ...
     % Isso aqui não ficou robusto o suficiente
     % Levar em consideração a largura da imagem ??
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    acumWidth = barsAcum(length(barsAcum));
-    %maxWidthBar = max(barWidths)
-    maxWidthBar = 5;
-    %fprintf('acumWidth: %d\n', acumWidth);
-    coef = acumWidth / (6*7);
-    coef = coef / maxWidthBar;
-    %barWidths = round(barWidths * (3/5));
-    barWidths = round(barWidths * coef);
+%     acumWidth = barsAcum(length(barsAcum));
+%     %maxWidthBar = max(barWidths)
+%     maxWidthBar = 5;
+%     %fprintf('acumWidth: %d\n', acumWidth);
+%     coef = acumWidth / (6*7);
+%     coef = coef / maxWidthBar;
+%     %barWidths = round(barWidths * (3/5));
+%     barWidths = round(barWidths * coef);
     
 
+    barWidths = 100 * barWidths / barsAcum(length(barsAcum) - 1);
+    %barWidths = floor(barWidths);
     
 %     barWidths
 %     % Separa os grupos
