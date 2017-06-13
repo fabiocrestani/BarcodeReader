@@ -25,9 +25,8 @@ miniOCR = load('miniOCR/miniOCR.mat');
 miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
-%setFolder = 'imageSets/set3-cropped-random';
-%setFolder = 'imageSets/set2-fotos';
-imageFiles = dir([setFolder '/*.png']);
+setFolder = 'imageSets/set6-fotos-hd-full';
+imageFiles = dir([setFolder '/*.jpg']);
 if length(imageFiles) < 1
     error('Erro: main. Nenhum arquivo encontrado');
 end
