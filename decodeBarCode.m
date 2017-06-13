@@ -10,7 +10,7 @@ function [barWidths, firstGroup, secondGroup] = ...
     
     figure;  
     subplot(211); imshow([croppedBarCodeBeforeBW; 255*croppedBarCode]);    
-    croppedBarCode = imboxfilt(croppedBarCode, [7, 2]);
+    %croppedBarCode = imboxfilt(croppedBarCode, [7, 1]);
     subplot(212); imshow([croppedBarCodeBeforeBW; 255*croppedBarCode]);
     
     % Faz a média por coluna
@@ -73,16 +73,31 @@ function [barWidths, firstGroup, secondGroup] = ...
         barsAcum(k) = barsAcum(k - 1) + abs(barWidths(k));
     end
     
+ 
+    
+    
+    % TODO tentar normalizar pelo histograma
+    maximo = max(abs(barWidths));
+    dist = maximo / 8
+    dist = dist * 2;
+    
+
+    
     % Normaliza larguras e arredonda
     barWidths = 100 * barWidths / barsAcum(length(barsAcum) - 1);
+    
+        figure; subplot(211); 
+    stem(barWidths, 'Marker', 'none', 'LineWidth', 3); grid;
+    title('Antes');
+    
     for k = 1 : length(barWidths)
         absBar = abs(barWidths(k));
         positiveBar = barWidths(k) > 0;
-        if absBar < 0.5, absBar = 0; end
-        if absBar < 1.5 && absBar > 0.5, absBar = 1; end;
-        if absBar < 2.8 && absBar > 1.5, absBar = 2; end;
-        if absBar < 3.5 && absBar > 2.8, absBar = 3; end;
-        if absBar > 4, absBar = 4; end;   
+        if absBar < 0.4, absBar = 0; end
+        if absBar < 1.7 && absBar >= 0.1, absBar = 1; end;
+        if absBar < 2.7 && absBar >= 1.7, absBar = 2; end;
+        if absBar < 3.7 && absBar >= 2.7, absBar = 3; end;
+        if absBar >= dist*4, absBar = 4; end;   
         if positiveBar
             barWidths(k) = absBar;
         else
@@ -90,6 +105,14 @@ function [barWidths, firstGroup, secondGroup] = ...
         end
     end
     barWidths(barWidths==0)=[]; 
+
+    barWidths(barWidths > 4) = 4;
+    
+    subplot(212); 
+    stem(barWidths, 'Marker', 'none', 'LineWidth', 3); grid;
+    title('Depois');
+    
+    figure;
     
     % Separa os dois grupos
     inicioG1 = 4;
@@ -106,9 +129,9 @@ function [barWidths, firstGroup, secondGroup] = ...
             'valor positivo: barra branca de tamanho y']);
         hold all;
         stem([zeros(1, inicioG1 - 1) firstGroup], 'Marker', 'none', ...
-            'LineWidth', 3);
+           'LineWidth', 3);
         stem([zeros(1, inicioG2 - 1) secondGroup], 'Marker', 'none', ...
-            'LineWidth', 3);
+           'LineWidth', 3);
         hold off;
     end
 
