@@ -32,7 +32,6 @@ if length(imageFiles) < 1
     error('Erro: main. Nenhum arquivo encontrado');
 end
 numberOfFiles = length(imageFiles);
-%numberOfFiles = 1;
 
 % Seleção das funções
 showResultImages       = false;
@@ -69,8 +68,7 @@ for i = 1 : numberOfFiles
                                  [1, (3*m/10), n, m - 9*(m/10)]);
  
     % Determina primeiro e segundo grupo do código de barras    
-    [g1, g2] = barCodeExtractGroups(croppedBarCode, false);
-     
+    [g1, g2] = barCodeExtractGroups(croppedBarCode, false); 
     firstGroup  = splitGroupBits(g1, false);
     secondGroup = splitGroupBits(g2, false);
      
