@@ -5,10 +5,10 @@ Projeto final da disciplina de Processamento Digital de Imagens da UTFPR Câmpus
 
 ## Branches
 O projeto têm quatro branches principais:
-* Estratégia2: Decodificação de códigos de barras aritificiais
-* decodificacao-colunas: Decodificação de códigos de barras reais
+* decodificacao-imagens-artificiais: Decodificação de códigos de barras aritificiais
+* decodificacao-colunas: Decodificação de códigos de barras reais pelo método das médias das colunas
 * deteccao-reais: Detecção do código de barras em fotos
-* master: Usa a saída da detecção como entrada na decodificação
+* master: Usa a saída da detecção de imagens reais como entrada na decodificação de imagens reais
 As demais branches são irrelevantes
 
 ## Como usar
