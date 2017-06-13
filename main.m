@@ -41,7 +41,7 @@ bypassFirstDigitDecode = true;
 % Para comparação
 acertos = 0;
 
-for i = 1 : 2
+for i = 1 : 1
     if i == 3 || i == 6 || i == 9 || i == 10 || i == 13 || i == 14 ...
             || i == 15
         continue;
@@ -68,20 +68,22 @@ for i = 1 : 2
     % Identifica primeiro dígito
     firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR, ...
         firstDigitExptd, bypassFirstDigitDecode);
-
-    % Cropa código de barras novamente
+    
     [m, n] = size(extractedBarCode2);
     croppedBarCode = imcrop(extractedBarCode2, ...
                                  [1, (3*m/10), n, m - 9*(m/10)]);
  
-    % Determina primeiro e segundo grupo do código de barras
-    [barWidths, firstGroup, secondGroup] = ...
-         decodeBarCode(croppedBarCode, true);
+    % Determina primeiro e segundo grupo do código de barras    
+    [g1, g2] = barCodeExtractGroups(croppedBarCode, false);
+     
+    % [barWidths, firstGroup, secondGroup] = ...
+    % decodeBarCode2(croppedBarCode, true);
 
-     
-    %%%%%%%%%%%%
-     
-%     return;
+    %figure;
+    %imshow(repmat(g1, 30, 1)); title('g1');
+    
+    firstGroup  = splitGroupBits(g1, true);
+    secondGroup = splitGroupBits(g2, false);
      
     % Divide cada grupo em 6 dígitos
     firstGroupDigits = splitGroupDigits(firstGroup);
@@ -96,7 +98,7 @@ for i = 1 : 2
     % Calcula CRC
     [isCRCCorrect, computedCRC] = calculateCRC(firstDigit, ...
         firstGroupString, secondGroupString);   
-
+    
     % Resultados
     fprintf('Arquivo:         %d de %d\n', i, numberOfFiles);
     fprintf('Esperado:        %s-%s-%s\n', firstDigitExptd, ...
