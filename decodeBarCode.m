@@ -33,7 +33,6 @@ secondGroup = 0;
     threshold = 1/10;
     GxMean2(GxMean < threshold) = 0;
     GxMean2(GxMean > threshold) = 1;
-    bars = GxMean2;
     
     if debug
         figure;
@@ -47,10 +46,9 @@ secondGroup = 0;
         title('extractedBarCode3');
         subplot(222); stem(GxMean, 'Marker', 'x', 'LineWidth', 1); 
         title('GxMean'); grid;
-        t = 0:0.1:600;
+        t = 0:0.1:length(croppedBarCodeBeforeBW);
         hold on; 
         plot(t, ones(size(t))*threshold, 'r', 'LineWidth', 1);
-        plot(t, -1*ones(size(t))*threshold, 'r'); 
         hold off;
         subplot(223); stem(GxMean2, 'Marker', 'none', 'LineWidth', 2); 
         title('GxMean2');
@@ -75,21 +73,12 @@ secondGroup = 0;
             barWidth = barWidth + 1;
         end
     end
-    
-    if debug
-        subplot(224); stem(bars, 'Marker', 'none', 'LineWidth', 2); 
-        title('bars');
-    end
         
-    
     % Remove primeira barra, se for branca
     if barWidths(1) > 0
         barWidths(1) = [];
     end
-    
-    bars = bars*255;
-    barsPlot = repmat(bars, [100 1]);
-    
+        
     % Conta o número de barras
     barsAcum = 0;
     for k = 2 : length(barWidths)
@@ -111,10 +100,7 @@ secondGroup = 0;
     secondGroup = barWidths(inicioG2 : fimG2);
     
     if debug
-        figure;
-        subplot(211); imshow(barsPlot); title('bars'); 
-        xlabel('Código de barras reconstruído');
-        subplot(212); stem(barWidths, 'Marker', 'none', 'LineWidth', 3); 
+        subplot(224); stem(barWidths, 'Marker', 'none', 'LineWidth', 3); 
         title('barWidths'); grid;
         xlabel(['Valor negativo: barra preta de tamanho y, ' ...
             'valor positivo: barra branca de tamanho y']);
