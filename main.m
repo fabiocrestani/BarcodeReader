@@ -71,8 +71,13 @@ for i = 1 : numberOfFiles
  
     % Determina primeiro e segundo grupo do código de barras
     [barWidths, firstGroup, secondGroup] = ...
-         splitGroups(croppedBarCode, true);
+         decodeBarCode(croppedBarCode, true);
 
+     
+    %%%%%%%%%%%%
+     
+     return;
+     
     % Divide cada grupo em 6 dígitos
     firstGroupDigits = splitGroupDigits(firstGroup);
     secondGroupDigits = splitGroupDigits(secondGroup);
