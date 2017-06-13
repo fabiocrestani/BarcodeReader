@@ -25,7 +25,6 @@ function [barWidths] = splitGroupBits(g, debug)
         barWidths(barNumber + 1) = -barWidth;
     end
         
-    
     % Conta o número de barras
     barsAcum = 0;
     for k = 2 : length(barWidths)
@@ -33,31 +32,14 @@ function [barWidths] = splitGroupBits(g, debug)
     end
     
     % Normaliza larguras e arredonda
-    %barWidths = 100 * barWidths / barsAcum(length(barsAcum) - 1);
+    barWidths = 40 * barWidths / barsAcum(length(barsAcum));
+    barWidths = round(barWidths);
+    barWidths(barWidths > 4) = 4;
     
     if debug
         figure; subplot(211); 
         stem(barWidths, 'Marker', 'none', 'LineWidth', 3); grid;
         title('Antes');
-    end
-    
-    for k = 1 : length(barWidths)
-        absBar = abs(barWidths(k));
-        positiveBar = barWidths(k) > 0;
-        if absBar < 0.01, absBar = 0; end
-        if absBar < 4.5 && absBar >= 0.01, absBar = 1; end;
-        if absBar < 8.5 && absBar >= 4.5, absBar = 2; end;
-        if absBar < 15 && absBar >= 8.5, absBar = 3; end;
-        if absBar >= 15, absBar = 4; end;   
-        if positiveBar
-            barWidths(k) = absBar;
-        else
-            barWidths(k) = -absBar;
-        end
-    end
-    barWidths(barWidths==0)=[]; 
-    
-    if debug
         subplot(212); 
         stem(barWidths, 'Marker', 'none', 'LineWidth', 3); grid;
         title('Depois');

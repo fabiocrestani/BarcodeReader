@@ -40,14 +40,9 @@ bypassFirstDigitDecode = true;
 
 % Para comparação
 acertos = 0;
+digitosErrados = zeros(1, numberOfFiles);
 
-for i = 1 : 1
-    if i == 3 || i == 6 || i == 9 || i == 10 || i == 13 || i == 14 ...
-            || i == 15
-        continue;
-    end
-    %i = 2;
-    
+for i = 1 : numberOfFiles    
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
         readAndPrepareFile(imageFiles(i), setFolder);
@@ -76,13 +71,7 @@ for i = 1 : 1
     % Determina primeiro e segundo grupo do código de barras    
     [g1, g2] = barCodeExtractGroups(croppedBarCode, false);
      
-    % [barWidths, firstGroup, secondGroup] = ...
-    % decodeBarCode2(croppedBarCode, true);
-
-    %figure;
-    %imshow(repmat(g1, 30, 1)); title('g1');
-    
-    firstGroup  = splitGroupBits(g1, true);
+    firstGroup  = splitGroupBits(g1, false);
     secondGroup = splitGroupBits(g2, false);
      
     % Divide cada grupo em 6 dígitos
@@ -105,9 +94,12 @@ for i = 1 : 1
         firstGroupExptd, secondGroupExptd);
     fprintf('Obtido:          %s-%s-%s\n', int2str(firstDigit), ...
         firstGroupString, secondGroupString);
-    fprintf('Dígitos errados: %d\n', countNumberOfWrongDigits(...
+    digitosErradosI = countNumberOfWrongDigits(...
         firstGroupString, secondGroupString, firstGroupExptd, ...
-        secondGroupExptd));
+        secondGroupExptd);
+    fprintf('Dígitos errados: %d\n', digitosErradosI);
+    digitosErrados(i) = digitosErradosI;
+    
     if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
         strcmp(firstGroupExptd, firstGroupString) && ...
         strcmp(secondGroupExptd, secondGroupString)        
@@ -139,5 +131,6 @@ end
 erros = numberOfFiles - acertos;
 acertos = 100 * acertos / numberOfFiles;
 erros = 100 * erros / numberOfFiles;
-fprintf('Acertos:         %.1f%% \nErros:           %.1f%%\n\n', ...
+fprintf('Acertos:         %.1f%% \nErros:           %.1f%%\n', ...
     acertos, erros);
+fprintf('Média de dígitos errados: %.1f \n\n', mean(digitosErrados));
