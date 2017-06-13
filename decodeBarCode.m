@@ -2,12 +2,6 @@ function [barWidths, firstGroup, secondGroup] = ...
     decodeBarCode(croppedBarCode, debug)
 % TODO decodificar o código de barras sem usar gradiente
 
-barWidths = 0;
-firstGroup = 0;
-secondGroup = 0;
-
-
-    %croppedBarCode = imadjust(croppedBarCode);
     croppedBarCode = imadjust(croppedBarCode, [], [], 2.5)*1.3;
     croppedBarCode = imsharpen(croppedBarCode);
     croppedBarCodeBeforeBW = croppedBarCode;
@@ -15,14 +9,8 @@ secondGroup = 0;
     croppedBarCode = im2bw(croppedBarCode, 0.7);
     
     figure;  
-    subplot(211); imshow([croppedBarCodeBeforeBW; 255*croppedBarCode]);
-    
-    % TODO melhorar a imagem
-    
-    %se = strel('line', 11, 90);
-    %croppedBarCode = imdilate(croppedBarCode, se);
-    croppedBarCode = imboxfilt(croppedBarCode, [7, 1]);
-    
+    subplot(211); imshow([croppedBarCodeBeforeBW; 255*croppedBarCode]);    
+    croppedBarCode = imboxfilt(croppedBarCode, [7, 2]);
     subplot(212); imshow([croppedBarCodeBeforeBW; 255*croppedBarCode]);
     
     % Faz a média por coluna
@@ -85,14 +73,26 @@ secondGroup = 0;
         barsAcum(k) = barsAcum(k - 1) + abs(barWidths(k));
     end
     
-    % Normaliza larguras
+    % Normaliza larguras e arredonda
     barWidths = 100 * barWidths / barsAcum(length(barsAcum) - 1);
-    barWidths = round(barWidths);
-    barWidths(barWidths > 4) = 4;
-    barWidths(barWidths==0)=[];
+    for k = 1 : length(barWidths)
+        absBar = abs(barWidths(k));
+        positiveBar = barWidths(k) > 0;
+        if absBar < 0.5, absBar = 0; end
+        if absBar < 1.5 && absBar > 0.5, absBar = 1; end;
+        if absBar < 2.8 && absBar > 1.5, absBar = 2; end;
+        if absBar < 3.5 && absBar > 2.8, absBar = 3; end;
+        if absBar > 4, absBar = 4; end;   
+        if positiveBar
+            barWidths(k) = absBar;
+        else
+            barWidths(k) = -absBar;
+        end
+    end
+    barWidths(barWidths==0)=[]; 
     
     % Separa os dois grupos
-    inicioG1 = 5;
+    inicioG1 = 4;
     fimG1 = 27;
     inicioG2 = 33;
     fimG2 = 55;

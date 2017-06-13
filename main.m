@@ -32,7 +32,7 @@ if length(imageFiles) < 1
     error('Erro: main. Nenhum arquivo encontrado');
 end
 numberOfFiles = length(imageFiles);
-numberOfFiles = 1;
+%numberOfFiles = 1;
 
 % Seleção das funções
 showResultImages       = false;
@@ -42,6 +42,11 @@ bypassFirstDigitDecode = true;
 acertos = 0;
 
 for i = 1 : numberOfFiles
+    if i == 3 || i == 6 || i == 9 || i == 10 || i == 13 || i == 14 ...
+            || i == 15
+        continue;
+    end
+    %i = 2;
     
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
@@ -132,5 +137,5 @@ end
 erros = numberOfFiles - acertos;
 acertos = 100 * acertos / numberOfFiles;
 erros = 100 * erros / numberOfFiles;
-fprintf('Acertos:           %.1f%% \nErros:           %.1f%%\n\n', ...
+fprintf('Acertos:         %.1f%% \nErros:           %.1f%%\n\n', ...
     acertos, erros);
