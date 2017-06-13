@@ -1,6 +1,6 @@
 function [barWidths, firstGroup, secondGroup] = ...
     decodeBarCode(croppedBarCode, debug)
-% TODO decodificar o código de barras sem usar gradiente
+% Decodifica o código de barras
 
     croppedBarCode = imadjust(croppedBarCode, [], [], 2.5)*1.3;
     croppedBarCode = imsharpen(croppedBarCode);
@@ -73,31 +73,21 @@ function [barWidths, firstGroup, secondGroup] = ...
         barsAcum(k) = barsAcum(k - 1) + abs(barWidths(k));
     end
     
- 
-    
-    
-    % TODO tentar normalizar pelo histograma
-    maximo = max(abs(barWidths));
-    dist = maximo / 8
-    dist = dist * 2;
-    
-
-    
     % Normaliza larguras e arredonda
     barWidths = 100 * barWidths / barsAcum(length(barsAcum) - 1);
     
-        figure; subplot(211); 
+    figure; subplot(211); 
     stem(barWidths, 'Marker', 'none', 'LineWidth', 3); grid;
     title('Antes');
     
     for k = 1 : length(barWidths)
         absBar = abs(barWidths(k));
         positiveBar = barWidths(k) > 0;
-        if absBar < 0.4, absBar = 0; end
-        if absBar < 1.7 && absBar >= 0.1, absBar = 1; end;
+        if absBar < 0.01, absBar = 0; end
+        if absBar < 1.7 && absBar >= 0.01, absBar = 1; end;
         if absBar < 2.7 && absBar >= 1.7, absBar = 2; end;
         if absBar < 3.7 && absBar >= 2.7, absBar = 3; end;
-        if absBar >= dist*4, absBar = 4; end;   
+        if absBar >= 3.7, absBar = 4; end;   
         if positiveBar
             barWidths(k) = absBar;
         else
@@ -105,24 +95,32 @@ function [barWidths, firstGroup, secondGroup] = ...
         end
     end
     barWidths(barWidths==0)=[]; 
-
-    barWidths(barWidths > 4) = 4;
     
     subplot(212); 
     stem(barWidths, 'Marker', 'none', 'LineWidth', 3); grid;
     title('Depois');
     
-    figure;
+    % Encontra marcadores
+    mark = [-1 1 -1];
+    events = [];
+    for k = 1 : length(barWidths) - 2
+        if barWidths(k : k+2) == mark
+            events = [events k];
+        end
+    end
+    
+    events
     
     % Separa os dois grupos
-    inicioG1 = 4;
-    fimG1 = 27;
-    inicioG2 = 33;
-    fimG2 = 55;
+    inicioG1 = 6;
+    fimG1 = 29;
+    inicioG2 = 35;
+    fimG2 = 57;
     firstGroup = barWidths(inicioG1 : fimG1);
     secondGroup = barWidths(inicioG2 : fimG2);
     
     if debug
+        figure;
         subplot(224); stem(barWidths, 'Marker', 'none', 'LineWidth', 3); 
         title('barWidths'); grid;
         xlabel(['Valor negativo: barra preta de tamanho y, ' ...

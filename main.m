@@ -41,7 +41,7 @@ bypassFirstDigitDecode = true;
 % Para comparação
 acertos = 0;
 
-for i = 1 : 1
+for i = 1 : 2
     if i == 3 || i == 6 || i == 9 || i == 10 || i == 13 || i == 14 ...
             || i == 15
         continue;
