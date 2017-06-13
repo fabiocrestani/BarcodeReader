@@ -42,7 +42,7 @@ showResultImages = false;    % true se quiser mostrar as imagens resultantes
 acertos = 0;
 erros = 0;
 
-for i = 1 : 1
+for i = 1 : numberOfFiles
     
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
@@ -50,7 +50,7 @@ for i = 1 : 1
     
     % Primeira fase de extração - extração grosseira do código de barras
     [extractedBarCode1, boundingBox1] = ...
-        barCodeExtractionPhase1(image, true);
+        barCodeExtractionPhase1(image, false);
     
     % Segunda fase de extração - refina extração do código de barras
     [extractedBarCode2, boundingBox2] = barCodeExtractionPhase2(image, ...
