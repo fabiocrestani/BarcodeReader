@@ -67,7 +67,7 @@ for i = 1 : numberOfFiles
     % Cropa código de barras novamente
     [m, n] = size(extractedBarCode2);
     croppedBarCode = imcrop(extractedBarCode2, ...
-                                 [1, (3*m/12), n, m - 11*(m/12)]);
+                                 [1, (3*m/10), n, m - 9*(m/10)]);
  
     % Determina primeiro e segundo grupo do código de barras
     [barWidths, firstGroup, secondGroup] = ...
@@ -76,7 +76,7 @@ for i = 1 : numberOfFiles
      
     %%%%%%%%%%%%
      
-     return;
+%     return;
      
     % Divide cada grupo em 6 dígitos
     firstGroupDigits = splitGroupDigits(firstGroup);
