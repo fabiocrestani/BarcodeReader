@@ -25,7 +25,7 @@ miniOCR = load('miniOCR/miniOCR.mat');
 miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
-setFolder = 'imageSets/set3-cropped-random';
+%setFolder = 'imageSets/set3-cropped-random';
 %setFolder = 'imageSets/set2-fotos';
 imageFiles = dir([setFolder '/*.png']);
 if length(imageFiles) < 1
@@ -34,8 +34,7 @@ end
 numberOfFiles = length(imageFiles);
 
 % Seleção das funções
-deteccao         = false;    % Encontra código de barras na foto
-decodificacao    = true;   % Decodifica código de barras já encontrado
+deteccao         = true;    % Encontra código de barras na foto
 showResultImages = false;    % true se quiser mostrar as imagens resultantes
 
 % Para comparação
@@ -59,55 +58,6 @@ for i = 1 : numberOfFiles
     % Redimensiona
     extractedBarCode2 = imresize(extractedBarCode2, [171 191]);
     
-    % Decodificação
-    if decodificacao
-        % Terceira fase de extração - extrai primeiro dígito
-        [firstDigitExtracted, boundingBox3] = barCodeExtractionPhase3(...
-            image, extractedBarCode2, boundingBox2, false);
-
-        % Identifica primeiro dígito
-        firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR);
-
-        % Determina primeiro e segundo grupo do código de barras
-        [barWidths, firstGroup, secondGroup] = ...
-            splitGroups(extractedBarCode2, false);
-
-        % Divide cada grupo em 6 dígitos
-        firstGroupDigits = splitGroupDigits(firstGroup);
-        secondGroupDigits = splitGroupDigits(secondGroup);
-
-        % Decodifica grupo
-        [firstGroupInteger, firstGroupString] = decodeGroup(...
-            firstGroupDigits, firstDigit);
-        [secondGroupInteger, secondGroupString] = decodeGroup(...
-            secondGroupDigits);
-
-        % Calcula CRC
-        [isCRCCorrect, computedCRC] = calculateCRC(firstDigit, ...
-            firstGroupString, secondGroupString);   
-
-        % Resultados
-        fprintf('Arquivo:   %d de %d\n', i, numberOfFiles);
-        fprintf('Esperado:  %s-%s-%s\n', firstDigitExptd, ...
-            firstGroupExptd, secondGroupExptd);
-        fprintf('Obtido:    %s-%s-%s\n', int2str(firstDigit), ...
-            firstGroupString, secondGroupString);
-        if strcmp(firstDigitExptd, int2str(firstDigit)) && ...
-            strcmp(firstGroupExptd, firstGroupString) && ...
-            strcmp(secondGroupExptd, secondGroupString)        
-            fprintf('Resultado: OK\n');
-            acertos = acertos + 1;
-        else
-            fprintf('Resultado: Não OK\n');
-            erros = erros + 1;
-        end
-        if isCRCCorrect
-            fprintf('CRC:       OK\n\n');
-        else 
-            fprintf('CRC:       Não OK\n\n');
-        end
-    end
-    
     if showResultImages
         if decodificacao
             figure; imshow(extractedBarCode1); 
@@ -117,10 +67,6 @@ for i = 1 : numberOfFiles
             figure; imshow(firstDigitExtracted); 
             title('3a fase da extração'); 
             xlabel(firstDigit);
-            figure;
-            subplot(311); stem(barWidths); title('barWidths'); grid;
-            subplot(312); stem(firstGroup); title('firstGroup'); grid;
-            subplot(313); stem(secondGroup); title('secondGroup'); grid;
         else
             figure;
             subplot(121); imshow(image);
@@ -132,7 +78,3 @@ for i = 1 : numberOfFiles
         end
     end
 end
-
-acertos = 100 * acertos / numberOfFiles;
-erros = 100 * erros / numberOfFiles;
-fprintf('Acertos:   %.1f%% \nErros:     %.1f%%\n\n', acertos, erros);
