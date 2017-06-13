@@ -18,7 +18,8 @@ function [groupNumber, groupString] = ...
                 case 8, code = 'LGLGGL';                                
                 case 9, code = 'LGGLGL';
                 otherwise
-                    error('Erro em decodeGroup: firstDigit inválido');
+                    error(['Erro em decodeGroup: firstDigit inválido ' ...
+                        '(' num2str(firstDigit) ')']);
             end
         otherwise
             error('Erro em decodeGroup: Número de argumentos inválido');
