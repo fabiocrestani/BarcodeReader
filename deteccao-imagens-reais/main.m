@@ -13,20 +13,22 @@
 % Email: crestani.fabio@gmail.com                                        %
 % GitHub: https://github.com/fabiocrestani                               %
 %                                                                        %
-% Versão 0.2.1                                                           %
-% 07/06/2017                                                             %
+% Branch: deteccao-imagens-reais                                         %
+% Versão 1.0.0                                                           %
+% 19/06/2017                                                             %
 %                                                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 close all; clear all; clc;
 
 % Carrega miniOCR
-miniOCR = load('miniOCR/miniOCR.mat');
+miniOCR = load('../miniOCR/miniOCR.mat');
 miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
-setFolder = 'imageSets/set6-fotos-hd-full';
-imageFiles = dir([setFolder '/*.jpg']);
+setFolder = '../imageSets/set6-fotos-hd-full';
+fileType = 'jpg';
+imageFiles = dir([setFolder '/*.' fileType]);
 if length(imageFiles) < 1
     error('Erro: main. Nenhum arquivo encontrado');
 end
