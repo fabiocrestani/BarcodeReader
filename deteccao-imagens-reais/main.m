@@ -44,7 +44,7 @@ erros = 0;
 
 %numberOfFiles = 1;
 for i = 1 : numberOfFiles
-    %i = 1;
+    %i = 7;
     
     % Lê arquivo e pré-processa
     [originalImage, image, scale, firstDigitExptd, firstGroupExptd, ...
