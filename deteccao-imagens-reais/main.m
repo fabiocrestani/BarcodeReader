@@ -42,7 +42,12 @@ showResultImages = true;    % true se quiser mostrar as imagens resultantes
 acertos = 0;
 erros = 0;
 
+
+numberOfFiles = 1;
+
 for i = 1 : numberOfFiles
+    
+    i = 1;
     
     % Lê arquivo e pré-processa
     [originalImage, image, scale, firstDigitExptd, firstGroupExptd, ...
@@ -50,7 +55,7 @@ for i = 1 : numberOfFiles
     
     % Primeira fase de extração - extração grosseira do código de barras
     [extractedBarCode1SD, boundingBox1SD] = ...
-        barCodeExtractionPhase1(image, false);
+        barCodeExtractionPhase1(image, true);
     
     % Recorta código de barras da imagem original
     [extractedBarCode1HD, boundingBox1HD] = getFullSizeBarCode(...
@@ -61,25 +66,24 @@ for i = 1 : numberOfFiles
         extractedBarCode1HD, boundingBox1HD, false);
     
     if showResultImages
-        figure;
-        subplot(221); imshow(originalImage);
+        figure; imshow(originalImage);
         hold on;
         rectangle('Position', boundingBox1HD, 'Linewidth', 2, ...
             'EdgeColor', 'g');
         hold off;
         title('Original');
         
-        subplot(222); imshow(extractedBarCode1SD);
+        figure; imshow(extractedBarCode1SD);
         title('Código de barras detectado SD');
         
-        subplot(223); imshow(extractedBarCode1HD);
+        figure; imshow(extractedBarCode1HD);
         hold on;
         rectangle('Position', boundingBox2, 'Linewidth', 2, ...
             'EdgeColor', 'g');
         hold off;
         title('Código de barras detectado HD - segunda fase');
         
-        subplot(224);
+        figure;
         imshow(extractedBarCode2HD);
         title('Código de barras detectado refinado');
     end

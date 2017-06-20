@@ -4,7 +4,6 @@ function [extractedBarCode1, boundingBox] = ...
 
     [m, n] = size(image);
     MIN_AREA = m*n/60;
-    EXPECTED_RATIO = 2;
     MIN_SOLIDITY = 0.6;
     BOX_FILTER_SIZE = 7;
     
@@ -14,8 +13,9 @@ function [extractedBarCode1, boundingBox] = ...
     Gdir = abs(Gdir);
     
     if debug
-        figure; imshowpair(image, mat2gray(Gdir), 'montage'); 
-        title('Input | Gdir');
+        figure; imshow(image); title('Input');
+        figure; imshow(Gdir, colormap(flipud(hot))); 
+        title('Gdir');
     end
     
     % Calcula e aplica máscara
@@ -24,12 +24,11 @@ function [extractedBarCode1, boundingBox] = ...
     Gdir(mascaraX & mascaraYnegada) = 0;
     G = ~(abs(Gmag) .* Gdir);
     if debug
-        figure; 
-        subplot(221); imshow(mascaraX); title('Máscara X');
-        subplot(222); imshow(mascaraYnegada); title('Máscara Y negada');
-        subplot(223); imshow(mascaraX & mascaraYnegada); 
+        figure; imshow(mascaraX); title('Máscara X');
+        figure; imshow(mascaraYnegada); title('Máscara Y negada');
+        figure; imshow(mascaraX & mascaraYnegada); 
         title('Máscara X AND Máscara negada Y');
-        subplot(224); imshow(G); title('Máscara de Gdir * Gmag');
+        %figure; imshow(G); title('Máscara de Gdir * Gmag');
     end
         
     % Mediana assimétrica para manter apenas linhas verticais
@@ -84,7 +83,6 @@ function [extractedBarCode1, boundingBox] = ...
     end
     
     % Pega razão mais próxima do esperado
-    %razoes = abs(razoes - EXPECTED_RATIO)
     [~, minIndex] = max(razoes);
     boundingBox = stats(minIndex).BoundingBox;
     boundingBox(3:4) = boundingBox(3:4) - 1;
