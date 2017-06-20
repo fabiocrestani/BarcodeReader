@@ -2,6 +2,7 @@ function [extractedBarCode1, boundingBox] = ...
                                 barCodeExtractionPhase1(image, debug)
 % Extrai o código de barras de uma imagem maior
 
+    original = image;
     [m, n] = size(image);
     MIN_AREA = m*n/60;
     MIN_SOLIDITY = 0.6;
@@ -13,7 +14,10 @@ function [extractedBarCode1, boundingBox] = ...
     Gdir = abs(Gdir);
     
     if debug
-        figure; imshow(image); title('Input');
+        kernel = [-1 -1 -1;-1 8 -1;-1 -1 -1];
+        image = imfilter(image, kernel, 'same');
+        image = medfilt2(image, [1 1]);
+        figure; imshow(image); title('High pass + mediana');
         figure; imshow(Gdir, colormap(flipud(hot))); 
         title('Gdir');
     end
@@ -28,7 +32,6 @@ function [extractedBarCode1, boundingBox] = ...
         figure; imshow(mascaraYnegada); title('Máscara Y negada');
         figure; imshow(mascaraX & mascaraYnegada); 
         title('Máscara X AND Máscara negada Y');
-        %figure; imshow(G); title('Máscara de Gdir * Gmag');
     end
         
     % Mediana assimétrica para manter apenas linhas verticais
@@ -94,7 +97,7 @@ function [extractedBarCode1, boundingBox] = ...
     end
     
     % Cropa região da imagem original
-    extractedBarCode1 = imcrop(image, boundingBox);
+    extractedBarCode1 = imcrop(original, boundingBox);
     extractedBarCode1 = uint8(mat2gray(extractedBarCode1)*255);
    
     % Resultado
