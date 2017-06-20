@@ -42,9 +42,7 @@ showResultImages = true;    % true se quiser mostrar as imagens resultantes
 acertos = 0;
 erros = 0;
 
-%numberOfFiles = 1;
 for i = 1 : numberOfFiles
-    %i = 7;
     
     % Lê arquivo e pré-processa
     [originalImage, image, scale, firstDigitExptd, firstGroupExptd, ...

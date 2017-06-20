@@ -5,7 +5,8 @@ function [extractedBarCode1, boundingBox] = ...
     [m, n] = size(image);
     MIN_AREA = m*n/60;
     EXPECTED_RATIO = 2;
-    BOX_FILTER_SIZE = 9;
+    MIN_SOLIDITY = 0.6;
+    BOX_FILTER_SIZE = 7;
     
     % Calcula gradientes, módulo e ângulo
     [Gx, Gy] = imgradientxy(image);
@@ -69,7 +70,8 @@ function [extractedBarCode1, boundingBox] = ...
         
         % Filtra por área, razão largura-altura, solidez (proporção de 
         % pixels dentro da bounding box) e orientação (mais horizontal)
-        if area > MIN_AREA && solidity > 0.6 && razao > 1 && razao < 4
+        if area > MIN_AREA && solidity > MIN_SOLIDITY && razao > 1 ...
+                && razao < 4
             areas(j) = area;
             razoes(j) = razao;
             solidezes(j) = solidity;

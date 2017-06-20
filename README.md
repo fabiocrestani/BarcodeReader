@@ -35,4 +35,4 @@ A branch decodificacao-gradientes faz a decodificação através do método do g
 
 ### deteccao-reais
 * Conjunto de 19 fotos de códigos de barras
-* ?
+* Encontrou o código de barras em 14 de 19 fotos (73.7 %)
