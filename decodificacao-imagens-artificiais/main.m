@@ -26,7 +26,7 @@ miniOCR = load('../miniOCR/miniOCR.mat');
 miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
-setFolder = '../imageSets/set3-cropped-random';
+setFolder = '../imageSets/set1-decodificacao-imagens-artificiais';
 fileType = 'png';
 imageFiles = dir([setFolder '/*.' fileType ]);
 if length(imageFiles) < 1
