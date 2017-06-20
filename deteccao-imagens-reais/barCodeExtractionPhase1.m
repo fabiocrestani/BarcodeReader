@@ -3,9 +3,10 @@ function [extractedBarCode1, boundingBox] = ...
 % Extrai o código de barras de uma imagem maior
 
     [m, n] = size(image);
-    MIN_AREA = m*n/100;
+    MIN_AREA = m*n/60;
     EXPECTED_RATIO = 2;
-    BOX_FILTER_SIZE = 9;
+    MIN_SOLIDITY = 0.6;
+    BOX_FILTER_SIZE = 7;
     
     % Calcula gradientes, módulo e ângulo
     [Gx, Gy] = imgradientxy(image);
@@ -69,7 +70,8 @@ function [extractedBarCode1, boundingBox] = ...
         
         % Filtra por área, razão largura-altura, solidez (proporção de 
         % pixels dentro da bounding box) e orientação (mais horizontal)
-        if area > MIN_AREA && solidity > 0.4 && razao > 1
+        if area > MIN_AREA && solidity > MIN_SOLIDITY && razao > 1 ...
+                && razao < 4
             areas(j) = area;
             razoes(j) = razao;
             solidezes(j) = solidity;
@@ -82,16 +84,10 @@ function [extractedBarCode1, boundingBox] = ...
     end
     
     % Pega razão mais próxima do esperado
-    razoes = abs(razoes - EXPECTED_RATIO);
-    [~, minIndex] = min(razoes);
+    %razoes = abs(razoes - EXPECTED_RATIO)
+    [~, minIndex] = max(razoes);
     boundingBox = stats(minIndex).BoundingBox;
     boundingBox(3:4) = boundingBox(3:4) - 1;
-    
-    % Pega maior orientation
-%     [or, minOrientationIndex]= min(orientations);
-%     or
-%     boundingBox = stats(minOrientationIndex).BoundingBox;
-%     boundingBox(3:4) = boundingBox(3:4) - 1;
     
     if debug
         rectangle('Position', boundingBox, 'Linewidth', 2, ...
