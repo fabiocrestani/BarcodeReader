@@ -13,20 +13,22 @@
 % Email: crestani.fabio@gmail.com                                        %
 % GitHub: https://github.com/fabiocrestani                               %
 %                                                                        %
-% Versão 0.2.1                                                           %
-% 07/06/2017                                                             %
+% Branch: deteccao-imagens-reais                                         %
+% Versão 1.0.0                                                           %
+% 19/06/2017                                                             %
 %                                                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 close all; clear all; clc;
 
 % Carrega miniOCR
-miniOCR = load('miniOCR/miniOCR.mat');
+miniOCR = load('../miniOCR/miniOCR.mat');
 miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
-setFolder = 'imageSets/set6-fotos-hd-full';
-imageFiles = dir([setFolder '/*.jpg']);
+setFolder = '../imageSets/set6-fotos-hd-full';
+fileType = 'jpg';
+imageFiles = dir([setFolder '/*.' fileType]);
 if length(imageFiles) < 1
     error('Erro: main. Nenhum arquivo encontrado');
 end
@@ -34,46 +36,53 @@ numberOfFiles = length(imageFiles);
 
 % Seleção das funções
 deteccao         = true;    % Encontra código de barras na foto
-showResultImages = false;    % true se quiser mostrar as imagens resultantes
+showResultImages = true;    % true se quiser mostrar as imagens resultantes
 
 % Para comparação
 acertos = 0;
 erros = 0;
 
+%numberOfFiles = 1;
 for i = 1 : numberOfFiles
+    %i = 1;
     
     % Lê arquivo e pré-processa
-    [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
-        readAndPrepareFile(imageFiles(i), setFolder);
+    [originalImage, image, scale, firstDigitExptd, firstGroupExptd, ...
+        secondGroupExptd] = readAndPrepareFile(imageFiles(i), setFolder);
     
     % Primeira fase de extração - extração grosseira do código de barras
-    [extractedBarCode1, boundingBox1] = ...
+    [extractedBarCode1SD, boundingBox1SD] = ...
         barCodeExtractionPhase1(image, false);
     
+    % Recorta código de barras da imagem original
+    [extractedBarCode1HD, boundingBox1HD] = getFullSizeBarCode(...
+        originalImage, scale, boundingBox1SD);
+          
     % Segunda fase de extração - refina extração do código de barras
-    [extractedBarCode2, boundingBox2] = barCodeExtractionPhase2(image, ...
-        extractedBarCode1, boundingBox1, false);
-    
-    % Redimensiona
-    extractedBarCode2 = imresize(extractedBarCode2, [171 191]);
+    [extractedBarCode2HD, boundingBox2] = barCodeExtractionPhase2(...
+        extractedBarCode1HD, boundingBox1HD, false);
     
     if showResultImages
-        if decodificacao
-            figure; imshow(extractedBarCode1); 
-            title('1a fase da extração');
-            figure; imshow(extractedBarCode2); 
-            title('2a fase da extração');
-            figure; imshow(firstDigitExtracted); 
-            title('3a fase da extração'); 
-            xlabel(firstDigit);
-        else
-            figure;
-            subplot(121); imshow(image);
-            hold on;
-            rectangle('Position', boundingBox1, 'Linewidth', 2, ...
-                'EdgeColor', 'g');
-            hold off;
-            subplot(122); imshow(extractedBarCode2);
-        end
+        figure;
+        subplot(221); imshow(originalImage);
+        hold on;
+        rectangle('Position', boundingBox1HD, 'Linewidth', 2, ...
+            'EdgeColor', 'g');
+        hold off;
+        title('Original');
+        
+        subplot(222); imshow(extractedBarCode1SD);
+        title('Código de barras detectado SD');
+        
+        subplot(223); imshow(extractedBarCode1HD);
+        hold on;
+        rectangle('Position', boundingBox2, 'Linewidth', 2, ...
+            'EdgeColor', 'g');
+        hold off;
+        title('Código de barras detectado HD - segunda fase');
+        
+        subplot(224);
+        imshow(extractedBarCode2HD);
+        title('Código de barras detectado refinado');
     end
 end
