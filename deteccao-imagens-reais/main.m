@@ -14,8 +14,8 @@
 % GitHub: https://github.com/fabiocrestani                               %
 %                                                                        %
 % Branch: deteccao-imagens-reais                                         %
-% Versão 1.0.0                                                           %
-% 19/06/2017                                                             %
+% Versão 1.0.1                                                           %
+% 20/06/2017                                                             %
 %                                                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -43,7 +43,6 @@ acertos = 0;
 erros = 0;
 
 for i = 1 : numberOfFiles
-    
     % Lê arquivo e pré-processa
     [originalImage, image, scale, firstDigitExptd, firstGroupExptd, ...
         secondGroupExptd] = readAndPrepareFile(imageFiles(i), setFolder);
@@ -61,26 +60,24 @@ for i = 1 : numberOfFiles
         extractedBarCode1HD, boundingBox1HD, false);
     
     if showResultImages
-        figure;
-        subplot(221); imshow(originalImage);
+        figure; 
+        subplot(121); imshow(originalImage);
         hold on;
         rectangle('Position', boundingBox1HD, 'Linewidth', 2, ...
             'EdgeColor', 'g');
         hold off;
         title('Original');
-        
-        subplot(222); imshow(extractedBarCode1SD);
-        title('Código de barras detectado SD');
-        
-        subplot(223); imshow(extractedBarCode1HD);
+        subplot(122);imshow(extractedBarCode1HD);
         hold on;
         rectangle('Position', boundingBox2, 'Linewidth', 2, ...
             'EdgeColor', 'g');
         hold off;
         title('Código de barras detectado HD - segunda fase');
         
-        subplot(224);
-        imshow(extractedBarCode2HD);
-        title('Código de barras detectado refinado');
+%         figure; 
+%         subplot(121); imshow(extractedBarCode1SD);
+%         title('Código de barras detectado SD');
+%         subplot(122); imshow(extractedBarCode2HD);
+%         title('Código de barras detectado refinado');
     end
 end
