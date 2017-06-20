@@ -14,8 +14,8 @@
 % GitHub: https://github.com/fabiocrestani                               %
 %                                                                        %
 % Branch: deteccao-imagens-reais                                         %
-% Versão 1.0.0                                                           %
-% 19/06/2017                                                             %
+% Versão 1.0.1                                                           %
+% 20/06/2017                                                             %
 %                                                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -42,20 +42,14 @@ showResultImages = true;    % true se quiser mostrar as imagens resultantes
 acertos = 0;
 erros = 0;
 
-
-numberOfFiles = 1;
-
 for i = 1 : numberOfFiles
-    
-    i = 1;
-    
     % Lê arquivo e pré-processa
     [originalImage, image, scale, firstDigitExptd, firstGroupExptd, ...
         secondGroupExptd] = readAndPrepareFile(imageFiles(i), setFolder);
     
     % Primeira fase de extração - extração grosseira do código de barras
     [extractedBarCode1SD, boundingBox1SD] = ...
-        barCodeExtractionPhase1(image, true);
+        barCodeExtractionPhase1(image, false);
     
     % Recorta código de barras da imagem original
     [extractedBarCode1HD, boundingBox1HD] = getFullSizeBarCode(...
@@ -66,25 +60,24 @@ for i = 1 : numberOfFiles
         extractedBarCode1HD, boundingBox1HD, false);
     
     if showResultImages
-        figure; imshow(originalImage);
+        figure; 
+        subplot(121); imshow(originalImage);
         hold on;
         rectangle('Position', boundingBox1HD, 'Linewidth', 2, ...
             'EdgeColor', 'g');
         hold off;
         title('Original');
-        
-        figure; imshow(extractedBarCode1SD);
-        title('Código de barras detectado SD');
-        
-        figure; imshow(extractedBarCode1HD);
+        subplot(122);imshow(extractedBarCode1HD);
         hold on;
         rectangle('Position', boundingBox2, 'Linewidth', 2, ...
             'EdgeColor', 'g');
         hold off;
         title('Código de barras detectado HD - segunda fase');
         
-        figure;
-        imshow(extractedBarCode2HD);
-        title('Código de barras detectado refinado');
+%         figure; 
+%         subplot(121); imshow(extractedBarCode1SD);
+%         title('Código de barras detectado SD');
+%         subplot(122); imshow(extractedBarCode2HD);
+%         title('Código de barras detectado refinado');
     end
 end
