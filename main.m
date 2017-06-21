@@ -11,7 +11,7 @@
 %                                                                        %
 % Autor: Fábio Crestani                                                  %
 % Email: crestani.fabio@gmail.com                                        %
-% GitHub: https://github.com/fabiocrestani                               %
+% GitHub: https://github.com/fabiocrestani/BarcodeReader                 %
 %                                                                        %
 % Branch: master                                                         %
 % Versão 1.0.1                                                           %
