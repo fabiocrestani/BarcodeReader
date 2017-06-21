@@ -42,12 +42,7 @@ bypassFirstDigitDecode = true;
 acertos = 0;
 digitosErrados = zeros(1, numberOfFiles);
 
-numberOfFiles = 1
-
 for i = 1 : numberOfFiles    
-    
-    i = 1
-
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
         readAndPrepareFile(imageFiles(i), setFolder);
