@@ -14,16 +14,12 @@
 % GitHub: https://github.com/fabiocrestani                               %
 %                                                                        %
 % Branch: decodificacao-imagens-artificiais                              %
-% Versão 1.0.0                                                           %
-% 19/06/2017                                                             %
+% Versão 1.0.1                                                           %
+% 21/06/2017                                                             %
 %                                                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 close all; clear all; clc;
-
-% Carrega miniOCR
-miniOCR = load('../miniOCR/miniOCR.mat');
-miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
 setFolder = '../imageSets/set1-decodificacao-imagens-artificiais';
