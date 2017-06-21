@@ -14,16 +14,12 @@
 % GitHub: https://github.com/fabiocrestani                               %
 %                                                                        %
 % Branch: decodificacao-imagens-reais                                    %
-% Versão 1.0.0                                                           %
-% 19/06/2017                                                             %
+% Versão 1.0.1                                                           %
+% 21/06/2017                                                             %
 %                                                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 close all; clear all; clc;
-
-% Carrega miniOCR
-miniOCR = load('../miniOCR/miniOCR.mat');
-miniOCR = miniOCR.miniOCR;
 
 % Carrega imagens
 setFolder = '../imageSets/set2-decodificacao-imagens-reais';
@@ -36,7 +32,6 @@ numberOfFiles = length(imageFiles);
 
 % Seleção das funções
 showResultImages       = false;
-bypassFirstDigitDecode = true;
 
 % Para comparação
 acertos = 0;
@@ -61,10 +56,6 @@ for i = 1 : numberOfFiles
     % Redimensiona
     extractedBarCode2 = imresize(extractedBarCode2, [2*171 2*191]);
     
-    % Identifica primeiro dígito
-    firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR, ...
-        firstDigitExptd, bypassFirstDigitDecode);
-    
     [m, n] = size(extractedBarCode2);
     croppedBarCode = imcrop(extractedBarCode2, ...
                                  [1, (3*m/10), n, m - 9*(m/10)]);
@@ -77,6 +68,9 @@ for i = 1 : numberOfFiles
     % Divide cada grupo em 6 dígitos
     firstGroupDigits = splitGroupDigits(firstGroup);
     secondGroupDigits = splitGroupDigits(secondGroup);
+    
+    % Identifica primeiro dígito
+    firstDigit = computeFirstDigitFromGroupParity(firstGroupDigits);
 
     % Decodifica grupo
     [firstGroupInteger, firstGroupString] = decodeGroup(...
