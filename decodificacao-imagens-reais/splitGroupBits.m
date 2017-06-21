@@ -37,6 +37,10 @@ function [barWidths] = splitGroupBits(g, debug)
     barWidths(barWidths > 4) = 4;
     
     if debug
+        figure;
+        stem(barWidths, 'Marker', 'none', 'LineWidth', 5); grid;
+        title('Largura das barras');
+        
         figure; subplot(211); 
         stem(barWidths, 'Marker', 'none', 'LineWidth', 3); grid;
         title('Antes');

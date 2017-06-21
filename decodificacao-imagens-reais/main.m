@@ -42,7 +42,11 @@ bypassFirstDigitDecode = true;
 acertos = 0;
 digitosErrados = zeros(1, numberOfFiles);
 
+numberOfFiles = 1
+
 for i = 1 : numberOfFiles    
+    
+    i = 1
 
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
@@ -67,7 +71,7 @@ for i = 1 : numberOfFiles
     
     [m, n] = size(extractedBarCode2);
     croppedBarCode = imcrop(extractedBarCode2, ...
-                                 [1, (3*m/10), n, m - 9*(m/10)]);
+        [1, (3*m/10), n, m - 9*(m/10)]);
  
     % Determina primeiro e segundo grupo do código de barras    
     [g1, g2] = barCodeExtractGroups(croppedBarCode, false); 

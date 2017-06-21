@@ -24,6 +24,7 @@ function [extractedBarCode1Rotate] = rotateBarCode(extractedBarCode1, ...
                 x2 = lines(k).point2(1);
                 y2 = lines(k).point2(2);
                 plot([x1 x2],[y1 y2],'Color','g','LineWidth', 2)
+                title('Resultado da transformada de Hough');
             end
         end
     end
@@ -47,11 +48,11 @@ function [extractedBarCode1Rotate] = rotateBarCode(extractedBarCode1, ...
     
     if debug
         figure; imshowpair(extractedBarCode1, extractedBarCode1Rotate, ...
-            'montage');
-        hold on;
-        rectangle('Position', [900 1 2 500], 'Linewidth', 2, ...
-            'EdgeColor', 'g');
-        hold off;
+            'falsecolor');
+%         hold on;
+%         rectangle('Position', [900 1 2 500], 'Linewidth', 2, ...
+%             'EdgeColor', 'g');
+%         hold off;
         title('extractedBarCode1 e extractedBarCode1Rotate');
     end
 end
