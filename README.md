@@ -1,6 +1,7 @@
 # BarcodeReader
 
 Um decodificador de códigos de barras EAN-13 através de processamento de imagem.
+
 Projeto final da disciplina de Processamento Digital de Imagens da UTFPR Câmpus Curitiba.
 
 ## Branches
@@ -10,29 +11,19 @@ O projeto têm quatro branches principais:
 * deteccao-reais: Detecção do código de barras reais em fotos
 * master: Une as três branches anteriores e permite selecionar qual delas se deseja rodar.
 
-A branch decodificacao-gradientes faz a decodificação através do método do gradiente horizontal, mas foi abandonada pois o método das médias das colunas apresentou melhor resultado.
-
 ## Como usar
+A partir da branch master, rodar o script main.m, o qual permite escolher qual dos algoritmos será executado:
+![Seleção do algoritmo](https://raw.githubusercontent.com/fabiocrestani/BarcodeReader/842e2dced64c1662132977ba590c6f740b5ad898/docs/readme/telaInicial.png "")
+
+Para utilizar outro conjunto de imagens, basta modificar o conteúdo dos datasets de cada algoritmo:
+![Seleção do algoritmo](https://raw.githubusercontent.com/fabiocrestani/BarcodeReader/842e2dced64c1662132977ba590c6f740b5ad898/docs/readme/imageSets.png "")
+
+## Relatório
 * TODO
 
-## Referências:
+## Referências
 * https://www.free-barcode-generator.net/ean-13/
 * https://en.wikipedia.org/wiki/International_Article_Number
 
-## Diagrama de blocos:
-![digrama de blocos](https://raw.githubusercontent.com/fabiocrestani/BarcodeReader/master/docs/DiagramaDeBlocosNivel1-ProjetoPDI-BarCodeReader.png "")
-
-## Resultados
-
-### decodificacao-imagens-artificiais
-* Conjunto de 220 imagens bem formatadas
-* Acertos: 98.6 %
-
-### decodificacao-colunas
-* Conjunto de 19 imagens de códigos de barras recortados
-* Acertos: 36.8 %
-* Média de 5.3 dígitos errados por código de barras
-
-### deteccao-reais
-* Conjunto de 19 fotos de códigos de barras
-* Encontrou o código de barras em 14 de 19 fotos (73.7 %)
+## Código fonte
+https://github.com/fabiocrestani/BarcodeReader
