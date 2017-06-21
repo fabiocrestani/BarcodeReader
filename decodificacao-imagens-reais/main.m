@@ -21,10 +21,6 @@
 
 close all; clear all; clc;
 
-% Carrega miniOCR
-miniOCR = load('../miniOCR/miniOCR.mat');
-miniOCR = miniOCR.miniOCR;
-
 % Carrega imagens
 setFolder = '../imageSets/set2-decodificacao-imagens-reais';
 fileType = 'jpg';
