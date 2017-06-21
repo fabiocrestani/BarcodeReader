@@ -43,8 +43,7 @@ showResultImages = false;    % true se quiser mostrar as imagens resultantes
 acertos = 0;
 erros = 0;
 
-for i = 1 : numberOfFiles
-    
+for i = 1 : numberOfFiles    
     % Lê arquivo e pré-processa
     [image, firstDigitExptd, firstGroupExptd, secondGroupExptd] = ...
         readAndPrepareFile(imageFiles(i), setFolder);
@@ -62,13 +61,6 @@ for i = 1 : numberOfFiles
     
     % Decodificação
     if decodificacao
-        % Terceira fase de extração - extrai primeiro dígito
-        [firstDigitExtracted, boundingBox3] = barCodeExtractionPhase3(...
-            image, extractedBarCode2, boundingBox2, false);
-
-        % Identifica primeiro dígito
-        firstDigit = identifyFirstDigit(firstDigitExtracted, miniOCR);
-
         % Determina primeiro e segundo grupo do código de barras
         [barWidths, firstGroup, secondGroup] = ...
             splitGroups(extractedBarCode2, false);
@@ -77,6 +69,9 @@ for i = 1 : numberOfFiles
         firstGroupDigits = splitGroupDigits(firstGroup);
         secondGroupDigits = splitGroupDigits(secondGroup);
 
+        % Calcula primeiro dígito
+        firstDigit = computeFirstDigitFromGroupParity(firstGroupDigits);
+        
         % Decodifica grupo
         [firstGroupInteger, firstGroupString] = decodeGroup(...
             firstGroupDigits, firstDigit);
