@@ -19,7 +19,7 @@ Para utilizar outro conjunto de imagens, basta modificar o conteúdo dos dataset
 ![Seleção do algoritmo](https://raw.githubusercontent.com/fabiocrestani/BarcodeReader/842e2dced64c1662132977ba590c6f740b5ad898/docs/readme/imageSets.png "")
 
 ## Relatório
-* TODO
+https://github.com/fabiocrestani/BarcodeReader/blob/693a42988414f922a53a868b421102d7d70f033a/docs/Relat%C3%B3rio%20-%20Detec%C3%A7%C3%A3o%20e%20decodifica%C3%A7%C3%A3o%20de%20c%C3%B3digos%20de%20barras.pdf
 
 ## Referências
 * https://www.free-barcode-generator.net/ean-13/
